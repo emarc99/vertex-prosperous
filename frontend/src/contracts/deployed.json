@@ -1,0 +1,46 @@
+{
+  "network": "robinhoodTestnet",
+  "chainId": 46630,
+  "rpcUrl": "https://rpc.testnet.chain.robinhood.com",
+  "blockExplorer": "https://explorer.testnet.chain.robinhood.com",
+  "deployer": "0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7",
+  "contracts": {
+    "NovaVault": "0x6C33f144264a480B3bd414Db39127deC91a3b69D",
+    "StockTokenAdapter": "0x3953E210A6F81BBe5d9cAA0BD2Cc89dED255f95E",
+    "YieldStreamer": "0x9693aAd2540D75057D0CDce4c16891230D335A6B",
+    "USDG": "0x7E955252E15c84f5768B83c41a71F9eba181802F"
+  },
+  "stockTokens": {
+    "TSLA": {
+      "address": "0xC9f9c86933092BbbfFF3CCb4b105A4A94bf3Bd4E",
+      "name": "Tesla, Inc.",
+      "priceUSD": 255.0,
+      "priceFeed": "0x9c1cC552DCe929B2228cbA195694A0f5730513BE"
+    },
+    "AMZN": {
+      "address": "0x5884aD2f920c162CFBbACc88C9C51AA75eC09E02",
+      "name": "Amazon.com, Inc.",
+      "priceUSD": 186.0,
+      "priceFeed": "0xa2a06b311C40b4383a5265Bd1340484E53bD9ac6"
+    },
+    "AMD": {
+      "address": "0x71178BAc73cBeb415514eB542a8995b82669778d",
+      "name": "Advanced Micro Devices",
+      "priceUSD": 156.0,
+      "priceFeed": "0x26718189B8Ac87473D27F9512Bba1EeAaF136227"
+    },
+    "NFLX": {
+      "address": "0x3b8262A63d25f0477c4DDE23F83cfe22Cb768C93",
+      "name": "Netflix, Inc.",
+      "priceUSD": 710.0,
+      "priceFeed": "0x96845233Fe9A8d3D815aF16d26BefB9ab72995d4"
+    },
+    "PLTR": {
+      "address": "0x1FBE1a0e43594b3455993B5dE5Fd0A7A266298d0",
+      "name": "Palantir Technologies",
+      "priceUSD": 37.0,
+      "priceFeed": "0x105484700F14DD9C337E5EA267BFa81840f5cD69"
+    }
+  },
+  "timestamp": "2026-09-27T18:03:00.000Z"
+}
