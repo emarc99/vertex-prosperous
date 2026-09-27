@@ -12,7 +12,9 @@ import {
   X,
   ShieldCheck,
   ExternalLink,
-  Droplets
+  Droplets,
+  Smartphone,
+  UserCheck
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import deployedInfo from "../contracts/deployed.json";
@@ -20,14 +22,26 @@ import deployedInfo from "../contracts/deployed.json";
 export function Navigation() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [walletAddress, setWalletAddress] = useState<string>("0xb8AD...edB7");
+  const [authMethod, setAuthMethod] = useState<string>("passkey");
+  const [userDisplay, setUserDisplay] = useState<string>("0xb8AD...edB7");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).ethereum?.selectedAddress) {
-      const addr = (window as any).ethereum.selectedAddress;
-      setWalletAddress(`${addr.slice(0, 6)}...${addr.slice(-4)}`);
+    if (typeof window !== "undefined") {
+      const storedMethod = localStorage.getItem("nova_auth_method") || "passkey";
+      setAuthMethod(storedMethod);
+
+      if (storedMethod === "email") {
+        const email = localStorage.getItem("nova_user_email") || "investor@novawealth.rh";
+        setUserDisplay(email);
+      } else if (storedMethod === "wallet") {
+        const addr = localStorage.getItem("nova_user_address") || (window as any).ethereum?.selectedAddress || "0xb8AD...edB7";
+        setUserDisplay(addr.length > 10 ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : addr);
+      } else {
+        const addr = localStorage.getItem("nova_user_address") || "0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7";
+        setUserDisplay(`${addr.slice(0, 6)}...${addr.slice(-4)}`);
+      }
     }
-  }, []);
+  }, [pathname]);
 
   const links = [
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -78,8 +92,8 @@ export function Navigation() {
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-secondary mt-2 border border-border"
             >
-              <LogIn size={18} />
-              Biometric Passkey ({walletAddress})
+              {authMethod === "passkey" ? <Smartphone size={18} className="text-accent" /> : authMethod === "wallet" ? <Wallet size={18} className="text-accent" /> : <UserCheck size={18} className="text-accent" />}
+              <span>{authMethod.toUpperCase()}: {userDisplay}</span>
             </Link>
             <a
               href="https://faucet.paxos.com"
@@ -165,15 +179,26 @@ export function Navigation() {
         <div className="p-4 border-t border-border bg-card">
           <Link
             href="/auth"
-            className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-foreground bg-secondary/80 border border-border hover:border-accent transition-colors w-full"
+            className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-foreground bg-secondary/80 border border-border hover:border-accent transition-colors w-full group"
           >
             <div className="flex items-center gap-2">
-              <ShieldCheck size={16} className="text-accent" />
-              <div>
-                <p className="font-semibold text-foreground">Passkey Smart Account</p>
-                <p className="text-[10px] text-muted-foreground">{walletAddress}</p>
+              {authMethod === "passkey" ? (
+                <ShieldCheck size={16} className="text-accent flex-shrink-0" />
+              ) : authMethod === "wallet" ? (
+                <Wallet size={16} className="text-accent flex-shrink-0" />
+              ) : (
+                <UserCheck size={16} className="text-accent flex-shrink-0" />
+              )}
+              <div className="truncate">
+                <p className="font-semibold text-foreground text-[11px] truncate">
+                  {authMethod === "passkey" ? "Passkey Smart Account" : authMethod === "wallet" ? "Web3 Wallet (46630)" : "Investor Account"}
+                </p>
+                <p className="text-[10px] text-muted-foreground truncate">{userDisplay}</p>
               </div>
             </div>
+            <span className="text-[10px] text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+              Switch
+            </span>
           </Link>
         </div>
       </aside>
