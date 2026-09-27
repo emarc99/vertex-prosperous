@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Autonomous Consumer Wealth & RWA Copilot on Robinhood Chain",
   "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:testnet": "hardhat run scripts/deploy.js --network robinhoodTestnet"
