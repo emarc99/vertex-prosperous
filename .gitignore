@@ -1,0 +1,16 @@
+.env
+.env.*
+.env.secret
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+frontend/out/
+out/
+build/
+cache/
+artifacts/
+typechain/
+typechain-types/
+.DS_Store
+*.log
