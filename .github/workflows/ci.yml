@@ -1,0 +1,48 @@
+name: NovaWealth CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  contracts:
+    name: Smart Contracts Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Compile Hardhat contracts
+        run: npx hardhat compile
+
+      - name: Run unit tests
+        run: npm test
+
+  frontend:
+    name: Frontend Production Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        run: npm --prefix frontend install
+
+      - name: Build Next.js application
+        run: npm --prefix frontend run build
