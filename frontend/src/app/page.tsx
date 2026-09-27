@@ -1,401 +1,186 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Navbar } from "../components/Navbar";
-import { HeroMetric } from "../components/HeroMetric";
-import { SmartCashVault } from "../components/SmartCashVault";
-import { EquityStreamStudio } from "../components/EquityStreamStudio";
-import { CopilotTerminal } from "../components/CopilotTerminal";
-import { PasskeyModal } from "../components/PasskeyModal";
-import { StockAsset, PortfolioState, CopilotLog } from "../lib/types";
-import deployedData from "../contracts/deployed.json";
+import Link from 'next/link';
+import { ArrowRight, Check, ShieldCheck, Sparkles, TrendingUp, WalletCards, Zap, Droplets } from 'lucide-react';
+import deployedInfo from '../contracts/deployed.json';
 
-export default function Home() {
-  const [account, setAccount] = useState<string>("0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7");
-  const [isPasskeyConnected, setIsPasskeyConnected] = useState<boolean>(true);
-  const [isPasskeyModalOpen, setIsPasskeyModalOpen] = useState<boolean>(false);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+const features = [
+  {
+    icon: WalletCards,
+    title: 'Smart Cash (Paxos USDG)',
+    text: 'Deposit Paxos USDG into our ERC-4626 vault with 8.45% APY on Morpho Blue and guaranteed T+0 instant liquidity on Robinhood Chain.'
+  },
+  {
+    icon: TrendingUp,
+    title: 'Invest from the Upside',
+    text: 'Harvested yield automatically streams via DCA into Robinhood Stock Tokens (TSLA, AMZN, AMD, NFLX, PLTR). Your principal is 100% safeguarded.'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Biometric Passkeys (ERC-4337)',
+    text: 'Zero seed phrases, 100% gas-sponsored transactions, and scoped session keys that let the autonomous copilot trade without signature popups.'
+  },
+];
 
-  // Live Stock Assets metadata from Robinhood Chain Testnet deployment
-  const [assets, setAssets] = useState<StockAsset[]>([
-    {
-      symbol: "TSLA",
-      name: "Tesla, Inc.",
-      address: deployedData.stockTokens.TSLA.address,
-      priceUSD: deployedData.stockTokens.TSLA.priceUSD,
-      balance: 5.0,
-      allocationBps: 3000, // 30%
-      color: "#E82127",
-    },
-    {
-      symbol: "AMZN",
-      name: "Amazon.com, Inc.",
-      address: deployedData.stockTokens.AMZN.address,
-      priceUSD: deployedData.stockTokens.AMZN.priceUSD,
-      balance: 5.0,
-      allocationBps: 2500, // 25%
-      color: "#FF9900",
-    },
-    {
-      symbol: "AMD",
-      name: "Advanced Micro Devices",
-      address: deployedData.stockTokens.AMD.address,
-      priceUSD: deployedData.stockTokens.AMD.priceUSD,
-      balance: 5.0,
-      allocationBps: 2000, // 20%
-      color: "#00C805",
-    },
-    {
-      symbol: "NFLX",
-      name: "Netflix, Inc.",
-      address: deployedData.stockTokens.NFLX.address,
-      priceUSD: deployedData.stockTokens.NFLX.priceUSD,
-      balance: 5.0,
-      allocationBps: 1500, // 15%
-      color: "#E50914",
-    },
-    {
-      symbol: "PLTR",
-      name: "Palantir Technologies",
-      address: deployedData.stockTokens.PLTR.address,
-      priceUSD: deployedData.stockTokens.PLTR.priceUSD,
-      balance: 5.0,
-      allocationBps: 1000, // 10%
-      color: "#00D8F6",
-    },
-  ]);
-
-  // User Portfolio State
-  const [portfolio, setPortfolio] = useState<PortfolioState>({
-    usdgWalletBalance: 100.0,
-    vaultDepositUSDG: 500.0,
-    accruedYieldUSDG: 18.45,
-    totalHarvestedUSDG: 24.5,
-    stockHoldings: {
-      TSLA: 5.0,
-      AMZN: 5.0,
-      AMD: 5.0,
-      NFLX: 5.0,
-      PLTR: 5.0,
-    },
-    totalEquityValueUSD: 0,
-    totalNetWorthUSD: 0,
-  });
-
-  // Telemetry logs
-  const [logs, setLogs] = useState<CopilotLog[]>([
-    {
-      id: "log-1",
-      timestamp: "10:14:02 AM",
-      type: "SESSION_CHECK",
-      title: "NYSE Session Verified",
-      details: "Trading session ACTIVE. Chainlink feeds fresh within 120s limit.",
-    },
-    {
-      id: "log-2",
-      timestamp: "10:14:05 AM",
-      type: "DCA_EXECUTION",
-      title: "Autonomous Yield Stream Executed",
-      details: "Streamed $12.50 USDG yield into 0.015 TSLA, 0.018 AMZN, 0.021 AMD.",
-      txHash: "0x6C33f144264a480B3bd414Db39127deC91a3b69D",
-    },
-  ]);
-
-  // Recalculate equity values when assets or holdings change
-  useEffect(() => {
-    let equitySum = 0;
-    assets.forEach((a) => {
-      const holding = portfolio.stockHoldings[a.symbol] || 0;
-      equitySum += holding * a.priceUSD;
-    });
-
-    const netWorth =
-      portfolio.vaultDepositUSDG +
-      portfolio.accruedYieldUSDG +
-      equitySum;
-
-    setPortfolio((prev) => ({
-      ...prev,
-      totalEquityValueUSD: equitySum,
-      totalNetWorthUSD: netWorth,
-    }));
-  }, [assets, portfolio.vaultDepositUSDG, portfolio.accruedYieldUSDG, portfolio.stockHoldings]);
-
-  // Connect Wallet handler
-  const handleConnectWallet = async () => {
-    if (typeof window !== "undefined" && (window as any).ethereum) {
-      try {
-        const accounts = await (window as any).ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      setIsPasskeyModalOpen(true);
-    }
-  };
-
-  // Deposit handler
-  const handleDeposit = async (amount: number) => {
-    setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setPortfolio((prev) => ({
-      ...prev,
-      usdgWalletBalance: Math.max(0, prev.usdgWalletBalance - amount),
-      vaultDepositUSDG: prev.vaultDepositUSDG + amount,
-    }));
-    setLogs((prev) => [
-      {
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString(),
-        type: "HARVEST",
-        title: "Smart Cash Deposit (T+0 Active)",
-        details: `Deposited $${amount.toFixed(2)} Paxos USDG. 85% allocated to Morpho Earn; 15% instant buffer.`,
-      },
-      ...prev,
-    ]);
-    setIsProcessing(false);
-  };
-
-  // Withdraw handler
-  const handleWithdraw = async (amount: number) => {
-    setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setPortfolio((prev) => ({
-      ...prev,
-      vaultDepositUSDG: Math.max(0, prev.vaultDepositUSDG - amount),
-      usdgWalletBalance: prev.usdgWalletBalance + amount,
-    }));
-    setLogs((prev) => [
-      {
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString(),
-        type: "HARVEST",
-        title: "Instant T+0 Redemption",
-        details: `Redeemed $${amount.toFixed(2)} USDG principal immediately from liquidity buffer.`,
-      },
-      ...prev,
-    ]);
-    setIsProcessing(false);
-  };
-
-  // Simulate Yield handler
-  const handleSimulateYield = async (amount: number) => {
-    setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setPortfolio((prev) => ({
-      ...prev,
-      accruedYieldUSDG: prev.accruedYieldUSDG + amount,
-    }));
-    setLogs((prev) => [
-      {
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString(),
-        type: "HARVEST",
-        title: "Morpho Yield Harvested",
-        details: `Accrued +$${amount.toFixed(2)} USDG interest from Robinhood Chain lending pools.`,
-      },
-      ...prev,
-    ]);
-    setIsProcessing(false);
-  };
-
-  // Update Basket handler
-  const handleUpdateBasket = async (newWeights: { [symbol: string]: number }) => {
-    setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setAssets((prev) =>
-      prev.map((a) => ({
-        ...a,
-        allocationBps: (newWeights[a.symbol] || 0) * 100,
-      }))
-    );
-    setLogs((prev) => [
-      {
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString(),
-        type: "REBALANCE",
-        title: "Onchain Basket Reconfigured",
-        details: `New weights: ${Object.entries(newWeights)
-          .filter(([_, w]) => w > 0)
-          .map(([sym, w]) => `${sym} ${w}%`)
-          .join(", ")}`,
-      },
-      ...prev,
-    ]);
-    setIsProcessing(false);
-  };
-
-  // Trigger Stream handler (Auto-DCA)
-  const handleTriggerStream = async (amountUSDG: number) => {
-    setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 1000));
-
-    // Calculate how many stock tokens were bought
-    const newHoldings = { ...portfolio.stockHoldings };
-    const purchasedSummary: string[] = [];
-
-    assets.forEach((a) => {
-      const sliceUSDG = (amountUSDG * a.allocationBps) / 10000;
-      if (sliceUSDG > 0) {
-        const sharesBought = sliceUSDG / a.priceUSD;
-        newHoldings[a.symbol] = (newHoldings[a.symbol] || 0) + sharesBought;
-        purchasedSummary.push(`${sharesBought.toFixed(4)} ${a.symbol}`);
-      }
-    });
-
-    setPortfolio((prev) => ({
-      ...prev,
-      accruedYieldUSDG: Math.max(0, prev.accruedYieldUSDG - amountUSDG),
-      totalHarvestedUSDG: prev.totalHarvestedUSDG + amountUSDG,
-      stockHoldings: newHoldings,
-    }));
-
-    setLogs((prev) => [
-      {
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString(),
-        type: "DCA_EXECUTION",
-        title: "Autonomous Yield DCA Executed",
-        details: `Streamed $${amountUSDG.toFixed(2)} yield into ${purchasedSummary.join(", ")}. Principal untouched!`,
-        txHash: "0x9693aAd2540D75057D0CDce4c16891230D335A6B",
-      },
-      ...prev,
-    ]);
-
-    setIsProcessing(false);
-  };
-
-  // Copilot conversational responses
-  const handleTriggerCopilotAction = async (prompt: string): Promise<string> => {
-    await new Promise((r) => setTimeout(r, 800));
-    const lower = prompt.toLowerCase();
-
-    if (lower.includes("principal") || lower.includes("protect")) {
-      return `🛡️ Your initial deposit of $${portfolio.vaultDepositUSDG.toFixed(2)} USDG is 100% safeguarded inside NovaVault (ERC-4626). Our contracts strictly enforce that only excess yield generated on Morpho Blue can be harvested. Even if all tokenized stocks dropped to zero, your cash principal remains fully withdrawable!`;
-    }
-
-    if (lower.includes("t+0") || lower.includes("liquidity") || lower.includes("withdraw")) {
-      return `⚡ Unlike traditional investments that take days or weeks to redeem, NovaVault features an instant T+0 liquidity buffer. When you withdraw, funds are settled immediately from the onchain buffer without waiting for redemption windows.`;
-    }
-
-    if (lower.includes("stock") || lower.includes("token")) {
-      return `📈 Robinhood Stock Tokens are tokenized equities issued by Robinhood Assets Jersey (RHJ). They provide 24/7 onchain economic exposure to US shares (TSLA, AMZN, AMD, NFLX, PLTR) with ERC-8056 corporate action multiplier compliance and Chainlink oracle price feeds.`;
-    }
-
-    if (lower.includes("session") || lower.includes("hour") || lower.includes("nyse")) {
-      return `🕒 Robinhood Chain supports 24/7 trading for Stock Tokens, but our YieldStreamer checks feed freshness and session capabilities to avoid trading during illiquid gap-down hours. Currently, all 5 Chainlink feeds are active and reporting fresh prices.`;
-    }
-
-    return `🤖 Copilot Analysis: Your portfolio has a healthy $${portfolio.vaultDepositUSDG.toFixed(2)} USDG deposit earning 8.45% APY. You currently have $${portfolio.accruedYieldUSDG.toFixed(2)} in accrued yield ready to stream. Your target basket is weighted across TSLA, AMZN, AMD, NFLX, and PLTR. Would you like me to trigger an automated DCA stream now?`;
-  };
-
+export default function LandingPage() {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Navbar */}
-      <Navbar
-        account={account}
-        isPasskeyConnected={isPasskeyConnected}
-        onConnectWallet={handleConnectWallet}
-        onOpenPasskeyModal={() => setIsPasskeyModalOpen(true)}
-      />
+    <main className="min-h-screen overflow-hidden bg-background text-foreground">
+      {/* Top Header */}
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-5 py-6 lg:px-10">
+        <Link href="/" className="text-xl font-bold tracking-[-0.04em] flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
+          Nova<span className="text-accent">Wealth</span>
+        </Link>
+        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+          <Link href="/dashboard" className="transition-colors hover:text-foreground">Dashboard</Link>
+          <Link href="/vault" className="transition-colors hover:text-foreground">Smart Vault</Link>
+          <Link href="/stream" className="transition-colors hover:text-foreground">Equity Studio</Link>
+          <Link href="/copilot" className="transition-colors hover:text-foreground">AI Copilot</Link>
+          <Link href="/deck" className="transition-colors hover:text-foreground">Briefing Deck</Link>
+        </nav>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://faucet.paxos.com"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-accent border border-accent/30 rounded-full hover:bg-accent/10"
+          >
+            <Droplets size={13} /> USDG Faucet
+          </a>
+          <Link
+            href="/dashboard"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+          >
+            Launch App <ArrowRight className="ml-1 inline" size={15} />
+          </Link>
+        </div>
+      </header>
 
-      {/* Main Container */}
-      <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px 24px", width: "100%", flex: 1 }}>
-        {/* Hero Section */}
-        <HeroMetric
-          portfolio={portfolio}
-          onDepositClick={() => {
-            const el = document.getElementById("vault-section");
-            el?.scrollIntoView({ behavior: "smooth" });
-          }}
-          onStreamClick={() => {
-            const el = document.getElementById("stream-section");
-            el?.scrollIntoView({ behavior: "smooth" });
-          }}
-          onCopilotClick={() => {
-            const el = document.getElementById("copilot-section");
-            el?.scrollIntoView({ behavior: "smooth" });
-          }}
-        />
-
-        {/* 2-Column Grid: Smart Cash Vault & Equity Stream Studio */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-          gap: "24px",
-          marginTop: "24px"
-        }}>
-          {/* Column 1: Smart Cash Vault */}
-          <div id="vault-section">
-            <SmartCashVault
-              portfolio={portfolio}
-              onDeposit={handleDeposit}
-              onWithdraw={handleWithdraw}
-              onSimulateYield={handleSimulateYield}
-              isProcessing={isProcessing}
-            />
+      {/* Hero Section */}
+      <section className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-24 pt-12 lg:grid-cols-[1.1fr_.9fr] lg:px-10 lg:pb-36 lg:pt-20">
+        <div className="relative z-10">
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3.5 py-1.5 text-xs font-medium text-accent">
+            <Sparkles size={13} /> Robinhood Chain • Autonomous RWA Copilot
           </div>
-
-          {/* Column 2: Equity Stream Studio */}
-          <div id="stream-section">
-            <EquityStreamStudio
-              assets={assets}
-              portfolio={portfolio}
-              onUpdateBasket={handleUpdateBasket}
-              onTriggerStream={handleTriggerStream}
-              isProcessing={isProcessing}
-            />
+          <h1 className="max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-0.065em] sm:text-7xl lg:text-[6.2rem]">
+            Make your money <span className="text-accent">move.</span>
+          </h1>
+          <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
+            NovaWealth activates idle stablecoin savings with Morpho Blue yields, instant T+0 liquidity, and automated zero-risk DCA into Robinhood Stock Tokens.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-accent/90 shadow-lg shadow-accent/20"
+            >
+              Open Dashboard <ArrowRight className="ml-2 inline" size={16} />
+            </Link>
+            <Link
+              href="/vault"
+              className="rounded-full border border-border px-6 py-3.5 text-sm font-semibold hover:border-accent/60 bg-card"
+            >
+              Explore Smart Vault
+            </Link>
           </div>
+          <p className="mt-5 text-xs text-muted-foreground flex items-center gap-2">
+            <Check size={14} className="text-accent" /> 100% Principal Protected • Live on Robinhood Chain Testnet (46630)
+          </p>
         </div>
 
-        {/* AI Copilot & Telemetry Terminal */}
-        <div id="copilot-section">
-          <CopilotTerminal
-            logs={logs}
-            onTriggerCopilotAction={handleTriggerCopilotAction}
-          />
-        </div>
+        {/* Hero Interactive Card */}
+        <div className="relative mx-auto w-full max-w-[440px] lg:justify-self-end">
+          <div className="absolute -inset-10 rounded-full bg-accent/10 blur-3xl" />
+          <div className="relative rounded-[2rem] border border-border bg-card p-6 shadow-2xl shadow-black/40">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <span className="text-sm font-semibold text-foreground">Your Portfolio in Motion</span>
+              <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[10px] font-bold text-accent border border-accent/30 animate-pulse">
+                LIVE ONCHAIN
+              </span>
+            </div>
+            <div className="py-8">
+              <p className="text-xs uppercase tracking-[.18em] text-muted-foreground font-medium">Total Wealth</p>
+              <p className="mt-2 text-5xl font-bold tracking-[-.06em] text-foreground">
+                $10,250<span className="text-lg text-muted-foreground">.00</span>
+              </p>
+              <p className="mt-2 text-sm font-medium text-accent flex items-center gap-1">
+                <TrendingUp size={15} /> +$250.00 accrued yield streamed
+              </p>
+            </div>
 
-        {/* Footer info & partners */}
-        <footer style={{
-          marginTop: "60px",
-          borderTop: "1px solid var(--border-color)",
-          paddingTop: "24px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-          fontSize: "0.8rem",
-          color: "var(--text-muted)"
-        }}>
-          <div>
-            <strong>NovaWealth</strong> — Built for the <strong>Arbitrum Open House Singapore Buildathon</strong>.
+            {/* Sparkline Visual */}
+            <div className="flex h-24 items-end gap-2 border-b border-border pb-3">
+              {[32, 45, 38, 62, 54, 78, 68, 90, 84, 100].map((height, index) => (
+                <div key={index} className="flex-1 rounded-t-sm bg-accent/20" style={{ height: `${height}%` }}>
+                  <div className="h-1/2 w-full rounded-t-sm bg-accent" />
+                </div>
+              ))}
+            </div>
+
+            {/* Mini breakdown */}
+            <div className="grid grid-cols-2 gap-3 pt-5">
+              <div className="rounded-xl bg-secondary p-3">
+                <p className="text-[11px] text-muted-foreground">Cash Principal</p>
+                <p className="mt-1 font-semibold text-foreground">$10,000.00 USDG</p>
+              </div>
+              <div className="rounded-xl bg-secondary p-3">
+                <p className="text-[11px] text-muted-foreground">RWA Equities</p>
+                <p className="mt-1 font-semibold text-accent">TSLA, AMZN, AMD</p>
+              </div>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: "16px" }}>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="border-y border-border bg-card/40">
+        <div className="mx-auto grid max-w-7xl gap-px bg-border px-5 lg:grid-cols-3 lg:px-10">
+          {features.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="bg-background px-6 py-12 lg:px-8">
+              <Icon className="mb-6 text-accent" size={24} />
+              <h2 className="text-xl font-semibold tracking-tight text-foreground">{title}</h2>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it Works Section */}
+      <section id="how-it-works" className="mx-auto grid max-w-7xl gap-10 px-5 py-24 lg:grid-cols-[.7fr_1.3fr] lg:px-10">
+        <div>
+          <p className="text-sm font-semibold text-accent uppercase tracking-wider">A Clearer Path Forward</p>
+          <h2 className="mt-3 max-w-md text-4xl font-semibold tracking-[-.05em] sm:text-5xl text-foreground">
+            One system. Every next move.
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            NovaWealth eliminates the friction between DeFi yield and tokenized equities.
+          </p>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {[
+            { step: '01', title: 'Deposit USDG', desc: 'Move idle stablecoins into NovaVault to earn 8.45% baseline lending yield with T+0 instant redemptions.' },
+            { step: '02', title: 'Set Target Basket', desc: 'Choose your desired Robinhood Stock Token allocations (TSLA, AMZN, AMD, NFLX, PLTR).' },
+            { step: '03', title: 'Automated Stream', desc: 'Yield streams automatically into equities via scoped session keys. Zero risk to your principal.' }
+          ].map((item) => (
+            <div key={item.step} className="border-t border-border pt-5">
+              <span className="text-xs font-mono font-bold text-accent">{item.step}</span>
+              <h3 className="mt-6 font-semibold text-foreground text-lg">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border px-5 py-8 lg:px-10 bg-card/20">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
+          <span>© 2026 NovaWealth • Built for the Arbitrum Open House Singapore Buildathon</span>
+          <div className="flex items-center gap-4">
             <span>Robinhood Chain (46630)</span>
             <span>Paxos USDG</span>
-            <span>Morpho Blue</span>
-            <span>ERC-8056 Stock Tokens</span>
+            <Link href="/deck" className="hover:text-foreground">Briefing Deck</Link>
           </div>
-        </footer>
-      </main>
-
-      {/* Passkey Modal */}
-      <PasskeyModal
-        isOpen={isPasskeyModalOpen}
-        onClose={() => setIsPasskeyModalOpen(false)}
-        onSuccess={() => {
-          setIsPasskeyConnected(true);
-          setIsPasskeyModalOpen(false);
-        }}
-        isAlreadyConnected={isPasskeyConnected}
-      />
-    </div>
+        </div>
+      </footer>
+    </main>
   );
 }
