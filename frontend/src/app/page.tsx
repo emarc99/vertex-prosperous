@@ -280,7 +280,7 @@ export default function Home() {
     }
 
     if (lower.includes("t+0") || lower.includes("liquidity") || lower.includes("withdraw")) {
-      return `⚡ Unlike traditional funds that take 30 to 180 days to redeem (as highlighted by SBI Digital Markets), NovaVault features an instant T+0 liquidity buffer. When you withdraw, funds are settled immediately from the onchain buffer without waiting for redemption windows.`;
+      return `⚡ Unlike traditional investments that take days or weeks to redeem, NovaVault features an instant T+0 liquidity buffer. When you withdraw, funds are settled immediately from the onchain buffer without waiting for redemption windows.`;
     }
 
     if (lower.includes("stock") || lower.includes("token")) {
@@ -381,7 +381,7 @@ export default function Home() {
             <span>Robinhood Chain (46630)</span>
             <span>Paxos USDG</span>
             <span>Morpho Blue</span>
-            <span>SBI Digital Markets Lane 2</span>
+            <span>ERC-8056 Stock Tokens</span>
           </div>
         </footer>
       </main>

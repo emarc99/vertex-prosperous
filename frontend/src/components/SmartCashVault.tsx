@@ -207,7 +207,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
           )}
           {tab === "withdraw" && (
             <p>
-              <strong style={{ color: "#00FF08" }}>Instant T+0 Redemptions:</strong> As detailed by SBI Digital Markets, you can redeem 100% of your USDG cash principal on demand without lockups or delay.
+              <strong style={{ color: "#00FF08" }}>Instant T+0 Redemptions:</strong> You can redeem 100% of your USDG cash principal on demand directly from the onchain liquidity buffer without lockups or delay.
             </p>
           )}
           {tab === "yield" && (

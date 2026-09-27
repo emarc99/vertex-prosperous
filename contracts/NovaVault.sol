@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  * @title NovaVault
  * @notice ERC-4626 Yield Vault for Paxos USDG on Robinhood Chain with Instant T+0 Liquidity
  *         and Autonomous Yield Harvesting.
- * @dev Aligned with SBI Digital Markets Lane 2 (Composability-First) and Robinhood Earn rails.
+ * @dev Aligned with Robinhood Earn rails and composable DeFi lending protocols.
  */
 contract NovaVault is ERC4626, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;

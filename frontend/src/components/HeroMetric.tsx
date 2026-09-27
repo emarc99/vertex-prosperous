@@ -78,7 +78,7 @@ export const HeroMetric: React.FC<HeroMetricProps> = ({
           fontSize: "0.75rem",
           color: "var(--text-muted)"
         }}>
-          SBI Digital Markets • Lane 2 Composability
+          Robinhood Chain • Autonomous RWA Layer
         </div>
       </div>
 

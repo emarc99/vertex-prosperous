@@ -1,10 +1,10 @@
 # NovaWealth ⚡
 
 ### Autonomous Consumer Wealth & RWA Copilot on Robinhood Chain
-> **Activating the $30B Idle RWA Capital Stack**: High-Yield Paxos USDG Sweeps, T+0 Instant Liquidity Fronting, No-Principal-Risk Stock Token DCA, and Biometric Passkey Smart Accounts.
+> **Autonomous Consumer Wealth & Real-World Asset Layer**: High-Yield Paxos USDG Sweeps, T+0 Instant Liquidity Fronting, No-Principal-Risk Stock Token DCA, and Biometric Passkey Smart Accounts.
 
 Built for the **Arbitrum Open House Singapore Buildathon (HackQuest)**  
-Tracks: **Robinhood Chain Track** | **Paxos USDG Bounty Track** | **SBI Digital Markets Alignment**
+Tracks: **Robinhood Chain Track** | **Paxos USDG Bounty Track** | **RWA & Consumer Track**
 
 ---
 
@@ -12,12 +12,11 @@ Tracks: **Robinhood Chain Track** | **Paxos USDG Bounty Track** | **SBI Digital 
 
 **NovaWealth** is a consumer-first autonomous wealth copilot on **Robinhood Chain** that bridges passive cash savings and tokenized US equities with **zero risk to initial capital**.
 
-### The Problem (The $30B Idle Liquidity Trap)
-As highlighted by **CK Ong** (Acting CEO of **SBI Digital Markets**) during the Arbitrum Open House RWA Workshop in Singapore (Sept 22, 2026):
-* **$31B–$38B** in tokenized RWAs exist on public chains, yet **~80% sits idle in US Treasuries and cash equivalents**.
-* Only **~9% of tokenized RWA value is active in DeFi** ($2.5B out of $30B). *"Issuance quadrupled. Usability did not. Most of it is just a database entry with a wallet address."*
-* The verdict: *"The ~$30B sitting idle is not a warning. It is your customer list."*
-* Past hackathon projects focused on institutional hedge fund OSs or developer-only risk layers, leaving **28.6M retail Robinhood users completely unserved**.
+### The Problem: Idle Stablecoin Capital & Market Access Friction
+* Billions of dollars in tokenized stablecoins and cash equivalents sit idle onchain without productive utility.
+* Retail users face a painful tradeoff: either leave savings idle, or risk their hard-earned principal chasing volatile market swings.
+* Traditional investment funds take days or weeks to redeem, conflicting with Web3's instant settlement expectations.
+* Existing RWA tooling caters almost exclusively to institutional hedge funds, leaving everyday retail investors without a simple, automated wealth-building copilot.
 
 ### The Solution: NovaWealth
 NovaWealth creates a retail-grade, mobile-first experience that activates dormant cash into real-world equities:
@@ -165,9 +164,9 @@ vercel --prod
    * Speaks directly to Robinhood's **28.6M retail user base** through frictionless savings and equity accumulation.
 2. **Paxos USDG Bounty Track**:
    * Positions **Paxos USDG** as the primary high-yield settlement currency driving organic deposit velocity.
-3. **SBI Digital Markets (SBIDM) Workshop Fit**:
-   * Solves CK Ong’s **$30B idle RWA liquidity crisis** by selecting **Lane 2 Composability** (Morpho + Robinhood Chain).
-   * Implements **Instant T+0 Liquidity Fronting** to bridge the gap between DeFi speed and real-world redemption windows.
+3. **Real-World Asset (RWA) & Capital Efficiency**:
+   * Bridges onchain stablecoin lending yield directly into tokenized real-world equities (TSLA, AMZN, AMD, NFLX, PLTR).
+   * Implements **Instant T+0 Liquidity Fronting** to eliminate multi-day redemption delays for everyday users.
 
 ---
 
