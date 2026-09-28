@@ -14,7 +14,8 @@ import {
   ExternalLink,
   Droplets,
   Smartphone,
-  UserCheck
+  UserCheck,
+  BookOpen
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import deployedInfo from "../contracts/deployed.json";
@@ -48,6 +49,7 @@ export function Navigation() {
     { href: "/vault", label: "Smart Vault", icon: Wallet },
     { href: "/stream", label: "Equity Studio", icon: Zap },
     { href: "/copilot", label: "AI Copilot", icon: MessageSquare },
+    { href: "/deck", label: "Investor Deck", icon: BookOpen },
   ];
 
   const isActive = (href: string) => pathname === href;
