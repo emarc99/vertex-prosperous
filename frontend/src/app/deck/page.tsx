@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, ShieldCheck, Zap, Layers, RefreshCw, CheckCircle2, Database, Lock, Cpu, TrendingUp, Sliders, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShieldCheck, Zap, Layers, RefreshCw, CheckCircle2, Database, Lock, TrendingUp, Sparkles, Timer, Gauge, Coins } from 'lucide-react';
 
 export default function DeckPage() {
   return (
@@ -78,7 +78,7 @@ export default function DeckPage() {
         </div>
       </section>
 
-      {/* Slide 3: COOL VISUAL EXECUTION ARCHITECTURE */}
+      {/* Slide 3: Visual Execution Architecture */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-10 lg:py-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-black/15 pb-8">
           <div>
@@ -228,10 +228,88 @@ export default function DeckPage() {
         </div>
       </section>
 
-      {/* Slide 4: Mathematical Safeguards & Instant T+0 Liquidity */}
+      {/* Slide 4: CAPITAL VELOCITY & INSTANT YIELD ROUTING (NEW) */}
+      <section className="bg-[#e9e7e0] border-y border-black/10 py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-black/15 pb-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#20a864] mb-2">05 / Capital Velocity</p>
+              <h2 className="text-4xl lg:text-5xl font-semibold tracking-[-.05em]">
+                Eliminating TradFi &ldquo;Cash Drag&rdquo;
+              </h2>
+            </div>
+            <p className="max-w-md text-sm text-black/65">
+              Why native on-chain execution beats traditional brokerages: 100% continuous yield generation meets single-block atomic equity settlement.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* TradFi Card */}
+            <div className="rounded-2xl border border-black/15 bg-white/80 p-8 flex flex-col justify-between shadow-sm">
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-black/60 bg-black/5 px-3 py-1 rounded-full font-mono">
+                    TradFi Brokerage Model
+                  </span>
+                  <Timer size={20} className="text-black/40" />
+                </div>
+                <h3 className="text-2xl font-semibold text-black mb-3">Pre-Funding Friction</h3>
+                <p className="text-sm text-black/75 mb-6 leading-relaxed">
+                  In traditional finance brokerages, running an automated DCA script or trigger-order requires keeping capital <strong>idle and unproductive</strong> in your account to ensure execution upon price triggers.
+                </p>
+                <div className="space-y-3 border-t border-black/10 pt-4 text-xs text-black/70">
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-500 font-bold">✕</span>
+                    <span><strong>Dead Capital Drag:</strong> Uninvested cash loses purchasing power to inflation.</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-500 font-bold">✕</span>
+                    <span><strong>Fragmented Settlement:</strong> Banking (ACH) and clearing (DTCC) take T+1 to T+2.</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 pt-4 border-t border-black/10 text-xs font-mono text-black/50">
+                Capital Velocity: Impaired by idle reserves
+              </div>
+            </div>
+
+            {/* NovaWealth Card */}
+            <div className="rounded-2xl border border-[#20d477]/50 bg-[#171817] text-white p-8 flex flex-col justify-between shadow-xl">
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#20d477] bg-[#20d477]/15 px-3 py-1 rounded-full font-mono border border-[#20d477]/30">
+                    NovaWealth On-Chain Engine
+                  </span>
+                  <Gauge size={20} className="text-[#20d477]" />
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-3">Instant Yield Routing</h3>
+                <p className="text-sm text-white/80 mb-6 leading-relaxed">
+                  Capital is <strong>never idle for a single block</strong>. 100% of deposited USDG generates 8.45% APY in Morpho Blue until the exact transaction the copilot atomically harvests yield and settles stock tokens.
+                </p>
+                <div className="space-y-3 border-t border-white/10 pt-4 text-xs text-white/85">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#20d477] font-bold">✓</span>
+                    <span><strong>Uninterrupted Compounding:</strong> Principal stays in the lending vault 24/7.</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#20d477] font-bold">✓</span>
+                    <span><strong>Single-Block Atomicity:</strong> Pull, oracle valuation, and token delivery happen in 1 tx.</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 pt-4 border-t border-white/10 text-xs font-mono text-[#20d477] flex items-center justify-between">
+                <span>Capital Velocity: 100% Max Efficiency</span>
+                <span className="text-white/40">Robinhood Chain Native</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Slide 5: Mathematical Safeguards & Instant T+0 Liquidity */}
       <section className="bg-white border-y border-black/10 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#20a864] mb-2">05 / Protocol Invariants</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#20a864] mb-2">06 / Protocol Invariants</p>
           <h2 className="text-4xl lg:text-5xl font-semibold tracking-[-.05em] mb-12">
             Engineered for consumer trust.
           </h2>
@@ -279,7 +357,7 @@ export default function DeckPage() {
         </div>
       </section>
 
-      {/* Slide 5: Market Opportunity & Traction */}
+      {/* Slide 6: Market Opportunity & Traction */}
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-24 lg:grid-cols-[1fr_1.5fr] lg:px-10">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-[#20a864]">Market Opportunity</p>

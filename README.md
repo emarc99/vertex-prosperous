@@ -141,7 +141,13 @@ $$\text{displayUnits} = \frac{\text{rawUnits} \times \text{uiMultiplier()}}{10^{
 * `StockTokenAdapter.sol` executes precision-loss-free conversions:
   $$\text{stockAmount} = \frac{\text{usdgAmount} \times 10^{20}}{\text{priceInUSD}}$$
 
-### 4. Autonomous Yield Bot & Session Keys (`agent/yield_bot.js`)
+### 4. Capital Velocity: Pre-Funding Friction (TradFi) vs. Instant Yield Routing (NovaWealth)
+In automated investment frameworks, **capital velocity** dictates true investor returns:
+* **The TradFi Problem (Pre-Funding Friction)**: If an investor sets an autonomous DCA script or trigger-order in a Traditional Finance brokerage (e.g. Schwab, Web2 Robinhood), cash must sit **unproductive and idle** in their account to ensure execution upon price triggers. This causes continuous **negative cash drag** and lost compounding interest.
+* **The NovaWealth Solution (Instant Yield Routing)**: In a composable on-chain ecosystem, capital is never idle for a single block. **100% of user USDG savings remain actively deployed in Morpho Blue generating 8.45% APY**. When an autonomous DCA parameter triggers, `YieldStreamer.sol` atomically extracts accrued micro-yield, queries the Chainlink oracle, and acquires fractional Robinhood Stock Tokens in **one single-block transaction**.
+* **Outcome**: Maximum capital velocity—uninterrupted yield compounding paired with zero dead-capital drag.
+
+### 5. Autonomous Yield Bot & Session Keys (`agent/yield_bot.js`)
 An automated node daemon monitors `NovaVault` telemetry. When `accruedYield()` crosses the threshold (e.g. 5 USDG), the daemon signs on behalf of authorized session keys without requiring interactive user approvals.
 
 ---
