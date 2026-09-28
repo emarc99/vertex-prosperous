@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, ShieldCheck, Zap, Layers, RefreshCw, CheckCircle2, XCircle, Database, Lock } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShieldCheck, Zap, Layers, RefreshCw, CheckCircle2, Database, Lock, Cpu, TrendingUp, Sliders, Sparkles } from 'lucide-react';
 
 export default function DeckPage() {
   return (
@@ -78,80 +78,151 @@ export default function DeckPage() {
         </div>
       </section>
 
-      {/* Slide 3: KEY ARCHITECTURAL DIFFERENTIATOR — WHY NO AMMs OR UNISWAP */}
+      {/* Slide 3: COOL VISUAL EXECUTION ARCHITECTURE */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-10 lg:py-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-black/15 pb-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-[#20a864] mb-2">04 / Execution Architecture</p>
             <h2 className="text-4xl lg:text-5xl font-semibold tracking-[-.05em]">
-              Why we rejected AMMs & Uniswap.
+              Peer-to-Pool Settlement Engine
             </h2>
           </div>
           <p className="max-w-md text-sm text-black/65">
-            Tokenized equities require institutional NAV accuracy. Relying on crypto AMMs breaks corporate actions and extracts toxic slippage from retail users.
+            How NovaWealth routes autonomous DCA flows with institutional NAV pricing, zero slippage, and on-chain corporate action scaling.
           </p>
         </div>
 
-        {/* Side-by-Side Comparison Matrix */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Card A: The AMM Pitfall */}
-          <div className="rounded-2xl border border-red-200 bg-red-50/40 p-8 flex flex-col justify-between">
+        {/* Visual Pipeline Cards */}
+        <div className="grid lg:grid-cols-3 gap-6 mb-10">
+          {/* Node 1 */}
+          <div className="rounded-2xl bg-white border border-black/10 p-7 flex flex-col justify-between shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#20d477]/5 rounded-bl-full pointer-events-none" />
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-100 px-3 py-1 rounded-full">
-                  Legacy AMM Model (Uniswap x · y = k)
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-8 h-8 rounded-full bg-black text-white text-xs font-mono font-bold flex items-center justify-center">
+                  01
                 </span>
-                <XCircle size={22} className="text-red-500" />
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-black/5 text-black/70">
+                  NovaVault.sol
+                </span>
               </div>
-              <h3 className="text-2xl font-semibold text-black mb-4">Why AMMs Fail for RWA Stocks</h3>
-              <ul className="space-y-4 text-sm text-black/75">
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-red-500 mt-0.5">✕</span>
-                  <span><strong>High Slippage & Thin Liquidity:</strong> On-chain equity token pools have shallow depth, penalizing small retail DCA streams with massive price impact.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-red-500 mt-0.5">✕</span>
-                  <span><strong>Predatory MEV Sandwiching:</strong> Automated DCA transactions on public AMMs are predictable targets for searcher bots to extract value.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-red-500 mt-0.5">✕</span>
-                  <span><strong>Incompatible with Corporate Splits:</strong> When TSLA splits 3-for-1, an AMM pool cannot adjust reserves without causing catastrophic balance distortion.</span>
-                </li>
-              </ul>
+              <h3 className="text-xl font-bold text-black mb-2">Yield Harvest Isolator</h3>
+              <p className="text-xs text-black/60 mb-4 leading-relaxed">
+                Captures baseline 8.45% APY from Morpho Blue lending pools while maintaining a 15% instant T+0 liquidity buffer.
+              </p>
+              <div className="p-3 rounded-lg bg-[#f8f7f3] border border-black/5 text-[11px] font-mono text-black/80 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-black/50">Deposit Asset:</span>
+                  <span className="font-semibold text-black">Paxos USDG (6 dec)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-black/50">Principal Guard:</span>
+                  <span className="font-semibold text-[#15803d]">Assets - Principal &gt; 0</span>
+                </div>
+              </div>
             </div>
-            <div className="mt-8 pt-4 border-t border-red-200 text-xs text-red-700 font-medium">
-              Result: Unpredictable pricing, capital leakage, and broken accounting.
+            <div className="mt-6 pt-3 border-t border-black/5 text-[11px] text-black/50 flex items-center justify-between">
+              <span>Siphons accrued yield only</span>
+              <ArrowRight size={14} className="text-black/30" />
             </div>
           </div>
 
-          {/* Card B: NovaWealth's Solution */}
-          <div className="rounded-2xl border border-[#20d477]/40 bg-[#171817] text-white p-8 flex flex-col justify-between shadow-xl">
+          {/* Node 2 */}
+          <div className="rounded-2xl bg-white border border-black/10 p-7 flex flex-col justify-between shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#20d477]/10 rounded-bl-full pointer-events-none" />
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#20d477] bg-[#20d477]/15 px-3 py-1 rounded-full border border-[#20d477]/30">
-                  NovaWealth Peer-to-Pool Model
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-8 h-8 rounded-full bg-[#20a864] text-white text-xs font-mono font-bold flex items-center justify-center">
+                  02
                 </span>
-                <CheckCircle2 size={22} className="text-[#20d477]" />
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-[#20d477]/15 text-[#15803d]">
+                  StockTokenAdapter.sol
+                </span>
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">Oracle-Priced Direct Settlement</h3>
-              <ul className="space-y-4 text-sm text-white/80">
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-[#20d477] mt-0.5">✓</span>
-                  <span><strong>Chainlink AggregatorV3 (8 Decimals):</strong> Precise real-time market NAV execution with <em>zero price impact</em> and <em>zero AMM slippage</em>.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-[#20d477] mt-0.5">✓</span>
-                  <span><strong>Native ERC-8056 Support:</strong> Dynamic scaling via <code className="text-[#20d477] text-xs">uiMultiplier()</code> calculates stock splits onchain without modifying reserve supplies.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-[#20d477] mt-0.5">✓</span>
-                  <span><strong>Regulated Primary Desk Routing:</strong> Swaps route through institutional liquidity providers (<code className="text-[#20d477] text-xs">liquiditySource</code>) backed 1:1 by real custodial shares.</span>
-                </li>
-              </ul>
+              <h3 className="text-xl font-bold text-black mb-2">Oracle & Multiplier Engine</h3>
+              <p className="text-xs text-black/60 mb-4 leading-relaxed">
+                Calculates fair-value unit conversion using 8-decimal Chainlink price feeds with Robinhood's native ERC-8056 stock split multiplier.
+              </p>
+              <div className="p-3 rounded-lg bg-[#f8f7f3] border border-black/5 text-[11px] font-mono text-black/80 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-black/50">Price Feeds:</span>
+                  <span className="font-semibold text-black">Chainlink AggregatorV3</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-black/50">Corporate Actions:</span>
+                  <span className="font-semibold text-[#15803d]">ERC-8056 uiMultiplier()</span>
+                </div>
+              </div>
             </div>
-            <div className="mt-8 pt-4 border-t border-white/10 text-xs text-[#20d477] font-medium flex items-center justify-between">
-              <span>Result: Institutional accuracy with zero MEV exploitation.</span>
-              <span className="font-mono text-[11px] text-white/40">StockTokenAdapter.sol</span>
+            <div className="mt-6 pt-3 border-t border-black/5 text-[11px] text-black/50 flex items-center justify-between">
+              <span>0% AMM slippage • Exact NAV</span>
+              <ArrowRight size={14} className="text-black/30" />
+            </div>
+          </div>
+
+          {/* Node 3 */}
+          <div className="rounded-2xl bg-[#171817] text-white p-7 flex flex-col justify-between shadow-lg relative overflow-hidden border border-black">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#20d477]/15 rounded-bl-full pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-8 h-8 rounded-full bg-[#20d477] text-black text-xs font-mono font-bold flex items-center justify-center">
+                  03
+                </span>
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-[#20d477]/20 text-[#20d477]">
+                  YieldStreamer.sol
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Autonomous DCA Streamer</h3>
+              <p className="text-xs text-white/70 mb-4 leading-relaxed">
+                Delegated session key bot executes batch allocations across the user's custom equity basket backed by real custodial shares.
+              </p>
+              <div className="p-3 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-white/90 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-white/50">Execution Mode:</span>
+                  <span className="font-semibold text-[#20d477]">ERC-4337 Session Key</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/50">Target RWAs:</span>
+                  <span className="font-semibold text-white">TSLA, AMZN, AMD, NFLX, PLTR</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 pt-3 border-t border-white/10 text-[11px] text-[#20d477] flex items-center justify-between">
+              <span>Non-custodial direct delivery</span>
+              <CheckCircle2 size={14} className="text-[#20d477]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Highlights Banner */}
+        <div className="rounded-2xl bg-[#202420] text-white p-8 lg:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8 border border-white/10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#20d477] animate-pulse" />
+              <p className="text-xs font-bold uppercase tracking-wider text-[#20d477]">
+                Architectural Invariant
+              </p>
+            </div>
+            <h4 className="text-2xl font-bold">
+              Direct Peer-to-Pool vs Fragmented Liquidity
+            </h4>
+            <p className="text-sm text-white/70 max-w-2xl leading-relaxed">
+              By using Chainlink oracle pricing and routing swaps directly through regulated broker-dealer liquidity desks (<code className="text-[#20d477] text-xs">liquiditySource</code>), NovaWealth eliminates AMM price slippage, prevents MEV sandwich exploitation, and accurately tracks stock splits.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-shrink-0 text-center">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <p className="text-xl font-bold font-mono text-[#20d477]">0%</p>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider mt-1">AMM Slippage</p>
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <p className="text-xl font-bold font-mono text-[#20d477]">8 Dec</p>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Oracle Precision</p>
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
+              <p className="text-xl font-bold font-mono text-[#20d477]">ERC-8056</p>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Split Scaling</p>
             </div>
           </div>
         </div>
@@ -216,7 +287,7 @@ export default function DeckPage() {
             Built for retail adoption.
           </h2>
           <p className="mt-4 text-black/65 text-base">
-            While previous hackathons built institutional prime-broker tools, NovaWealth is designed from the ground up for the everyday consumer seeking automated equity accumulation.
+            While previous hackathons built institutional hedge-fund tools, NovaWealth is designed from the ground up for the everyday consumer seeking automated equity accumulation.
           </p>
         </div>
 
@@ -234,8 +305,8 @@ export default function DeckPage() {
             <p className="mt-3 text-sm text-black/60">Instant liquidity fronting eliminating multi-day RWA lockup delays.</p>
           </div>
           <div className="border-t border-black/15 pt-5">
-            <p className="text-5xl font-semibold tracking-[-.06em]">10/10</p>
-            <p className="mt-3 text-sm text-black/60">Verified passing smart contract tests on Robinhood Chain Testnet (46630).</p>
+            <p className="text-5xl font-semibold tracking-[-.06em]">$0 Risk</p>
+            <p className="mt-3 text-sm text-black/60">Savings principal mathematically isolated from stock volatility.</p>
           </div>
 
           <div className="col-span-full mt-6 flex flex-wrap items-center gap-4">
