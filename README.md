@@ -30,6 +30,13 @@ NovaWealth creates a retail-grade, mobile-first experience that activates dorman
 3. **No-Principal-Risk Equity Streaming (`YieldStreamer.sol`)**: Instead of spending savings principal on volatile stocks, NovaWealth’s copilot continuously harvests accrued USDG yield and streams it into a curated basket of **Robinhood Stock Tokens** (`TSLA`, `AMZN`, `AMD`, `NFLX`, `PLTR`). **The user's principal is 100% protected and never exposed to downside.**
 4. **1-Click Biometric Passkeys (ERC-4337)**: Built with zero seed phrases and sponsored gas fees via Paymaster on Robinhood Chain. Scoped session keys allow the autonomous Copilot daemon to execute automated DCA without interrupting the user.
 
+### 🎯 The Strategic Wedge: Overcoming Retail Crypto-Skepticism
+* **Why Robinhood Chain & Paxos Need NovaWealth**: New L2s and tokenized assets face the "dormant liquidity" bottleneck—assets exist onchain but lack recurring retail transaction velocity. NovaWealth serves as the sticky consumer savings and DCA layer driving continuous TVL and daily equity trading volume.
+* **The Trust Triple-Lock (Dismantling Retail Hesitation)**:
+  1. **Zero Capital Risk**: Eliminates fear of crypto crashes—deposit savings are mathematically isolated from equity volatility ($\text{Yield} = \max(0, \text{Assets} - \text{Principal})$).
+  2. **Zero Seed Phrases**: Eliminates fear of lost private keys—1-click onboarding via Biometric Passkeys (FaceID / TouchID) with sponsored gas.
+  3. **Zero Redemption Lockup**: Eliminates fear of trapped capital—a 15% on-chain liquid buffer guarantees instant T+0 cash withdrawals on demand.
+
 ---
 
 ## 🚀 Live On-Chain Deployments (Robinhood Chain Testnet — `46630`)

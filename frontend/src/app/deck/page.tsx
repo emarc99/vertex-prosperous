@@ -34,6 +34,26 @@ export default function DeckPage() {
           </p>
           <span className="hidden text-6xl font-light text-black/15 sm:block">01</span>
         </div>
+
+        {/* Lead With Growth Traction & Scale Upfront */}
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-black/10">
+          <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
+            <p className="text-3xl lg:text-4xl font-bold tracking-tight text-black font-mono">28.6M</p>
+            <p className="text-xs text-black/60 mt-1 font-medium">Robinhood Retail Accounts</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
+            <p className="text-3xl lg:text-4xl font-bold tracking-tight text-black font-mono">$5T+</p>
+            <p className="text-xs text-black/60 mt-1 font-medium">Idle US Household Cash</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
+            <p className="text-3xl lg:text-4xl font-bold tracking-tight text-[#15803d] font-mono">8.45%</p>
+            <p className="text-xs text-black/60 mt-1 font-medium">Morpho USDG Lending APY</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
+            <p className="text-3xl lg:text-4xl font-bold tracking-tight text-black font-mono">T+0</p>
+            <p className="text-xs text-black/60 mt-1 font-medium">Instant Liquid Redemptions</p>
+          </div>
+        </div>
       </section>
 
       {/* Slide 2: The Core Thesis */}
@@ -66,14 +86,28 @@ export default function DeckPage() {
 
         <div className="bg-[#202420] p-8 text-white lg:p-12 flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#20d477]">03 / The Experience</p>
-            <h2 className="mt-16 text-3xl font-semibold tracking-tight">A calmer way to invest.</h2>
-            <p className="mt-4 leading-7 text-white/70">
-              1-click Biometric Passkeys (ERC-4337) and scoped session keys let the Copilot build an equity portfolio in the background with zero seed phrases and zero manual popups.
+            <p className="text-xs font-bold uppercase tracking-widest text-[#20d477]">03 / The Trust Triple-Lock</p>
+            <h2 className="mt-16 text-3xl font-semibold tracking-tight">Dismantling crypto-skepticism.</h2>
+            <p className="mt-3 text-xs text-white/70 leading-relaxed">
+              Everyday retail users fear market crashes, complex seed phrases, and locked funds. NovaWealth eliminates all three:
             </p>
+            <ul className="mt-4 space-y-2 text-xs text-white/85">
+              <li className="flex items-center gap-2">
+                <span className="text-[#20d477] font-bold">✓</span>
+                <span><strong>Zero Capital Loss:</strong> Deposit principal locked from downside.</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-[#20d477] font-bold">✓</span>
+                <span><strong>Zero Seed Phrases:</strong> 1-Click Biometric Passkeys (FaceID).</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-[#20d477] font-bold">✓</span>
+                <span><strong>Zero Lockup:</strong> 15% instant T+0 liquid buffer.</span>
+              </li>
+            </ul>
           </div>
-          <div className="mt-8 pt-4 border-t border-white/10 text-xs font-semibold uppercase tracking-wider text-[#20d477]/80">
-            UX: Zero Popups, Zero Seed Phrases
+          <div className="mt-6 pt-4 border-t border-white/10 text-xs font-semibold uppercase tracking-wider text-[#20d477]/80">
+            Adoption: Built for Everyday Consumers
           </div>
         </div>
       </section>
