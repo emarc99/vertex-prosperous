@@ -2,7 +2,7 @@
 
 import { Navigation } from '@/components/nav';
 import { Zap, Plus, X, TrendingUp, Check, ExternalLink, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import deployedInfo from '@/contracts/deployed.json';
 
@@ -27,6 +27,10 @@ const STREAMER_ABI = [
   "function getUserBasket(address user) external view returns (tuple(address stockToken, uint256 weightBps)[])"
 ];
 
+const VAULT_ABI = [
+  "function accruedYield() external view returns (uint256)"
+];
+
 export default function StreamPage() {
   const [positions, setPositions] = useState<StockPosition[]>([
     { id: '1', symbol: 'TSLA', name: 'Tesla, Inc.', allocation: 60, address: deployedInfo.stockTokens.TSLA.address },
@@ -35,7 +39,21 @@ export default function StreamPage() {
 
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError?: boolean } | null>(null);
-  const accruedYield = 34.20;
+  const [accruedYield, setAccruedYield] = useState<number>(10.0);
+
+  useEffect(() => {
+    async function loadAccrued() {
+      try {
+        const provider = new ethers.JsonRpcProvider(deployedInfo.rpcUrl);
+        const vault = new ethers.Contract(deployedInfo.contracts.NovaVault, VAULT_ABI, provider);
+        const rawYield = await vault.accruedYield().catch(() => BigInt(0));
+        setAccruedYield(parseFloat(ethers.formatUnits(rawYield, 6)));
+      } catch (err) {
+        console.warn("Could not query Robinhood testnet RPC in StreamPage:", err);
+      }
+    }
+    loadAccrued();
+  }, []);
 
   const totalAllocation = positions.reduce((sum, p) => sum + p.allocation, 0);
 

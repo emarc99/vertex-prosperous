@@ -1,8 +1,8 @@
 'use client';
 
 import { Navigation } from '@/components/nav';
-import { Wallet, TrendingUp, Lock, Clock, ArrowUpRight, ArrowDownLeft, Sparkles, Droplets, ExternalLink, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { Wallet, TrendingUp, Lock, Clock, ArrowUpRight, ArrowDownLeft, Sparkles, Droplets, ExternalLink, Loader2, RefreshCw, Radio } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 import deployedInfo from '@/contracts/deployed.json';
 
@@ -23,14 +23,65 @@ const ERC20_ABI = [
 
 export default function VaultPage() {
   const [tab, setTab] = useState<'deposit' | 'withdraw' | 'yield'>('deposit');
-  const [amount, setAmount] = useState('100');
+  const [amount, setAmount] = useState('10');
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError?: boolean } | null>(null);
+  const [isFetchingBalances, setIsFetchingBalances] = useState(false);
+  const [activeAddress, setActiveAddress] = useState<string>('0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7');
   const [userBalance, setUserBalance] = useState({
-    shares: 8200.0,
-    accruedYield: 34.20,
-    usdgWallet: 100.0
+    shares: 10.0,
+    accruedYield: 10.0,
+    usdgWallet: 75.0,
+    isLive: false
   });
+
+  // Query live on-chain balances from Robinhood Chain Testnet (46630)
+  const fetchBalances = useCallback(async () => {
+    setIsFetchingBalances(true);
+    try {
+      let targetAddr = '0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7';
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("nova_user_address");
+        if (stored && ethers.isAddress(stored)) {
+          targetAddr = stored;
+        } else if ((window as any).ethereum?.selectedAddress) {
+          targetAddr = (window as any).ethereum.selectedAddress;
+        }
+      }
+      setActiveAddress(targetAddr);
+
+      const provider = new ethers.JsonRpcProvider(deployedInfo.rpcUrl);
+      const vault = new ethers.Contract(deployedInfo.contracts.NovaVault, VAULT_ABI, provider);
+      const usdg = new ethers.Contract(deployedInfo.contracts.USDG, ERC20_ABI, provider);
+
+      const [rawShares, rawYield, rawUsdg] = await Promise.all([
+        vault.balanceOf(targetAddr).catch(() => BigInt(0)),
+        vault.accruedYield().catch(() => BigInt(0)),
+        usdg.balanceOf(targetAddr).catch(() => BigInt(0)),
+      ]);
+
+      const shares = parseFloat(ethers.formatUnits(rawShares, 6));
+      const accruedYield = parseFloat(ethers.formatUnits(rawYield, 6));
+      const usdgWallet = parseFloat(ethers.formatUnits(rawUsdg, 6));
+
+      setUserBalance({
+        shares,
+        accruedYield,
+        usdgWallet,
+        isLive: true
+      });
+    } catch (err: any) {
+      console.warn("Could not query Robinhood testnet RPC in Vault:", err?.message || err);
+    } finally {
+      setIsFetchingBalances(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBalances();
+    const interval = setInterval(fetchBalances, 20000);
+    return () => clearInterval(interval);
+  }, [fetchBalances]);
 
   const handleAction = async () => {
     setLoading(true);
@@ -60,22 +111,12 @@ export default function VaultPage() {
           const depTx = await vault.deposit(parsedAmount, userAddr);
           await depTx.wait(1);
 
-          setUserBalance(prev => ({
-            ...prev,
-            shares: prev.shares + numAmount,
-            usdgWallet: Math.max(0, prev.usdgWallet - numAmount)
-          }));
           setStatusMsg({ text: `✓ Successfully deposited $${numAmount} USDG into NovaVault! Tx: ${depTx.hash.slice(0, 10)}...` });
         } else if (tab === 'withdraw') {
           setStatusMsg({ text: "Redeeming USDG at T+0..." });
           const withTx = await vault.withdraw(parsedAmount, userAddr, userAddr);
           await withTx.wait(1);
 
-          setUserBalance(prev => ({
-            ...prev,
-            shares: Math.max(0, prev.shares - numAmount),
-            usdgWallet: prev.usdgWallet + numAmount
-          }));
           setStatusMsg({ text: `✓ Successfully redeemed $${numAmount} USDG instantly at T+0!` });
         } else if (tab === 'yield') {
           setStatusMsg({ text: "Injecting simulated lending yield..." });
@@ -84,9 +125,11 @@ export default function VaultPage() {
           const injTx = await vault.injectYield(parsedAmount);
           await injTx.wait(1);
 
-          setUserBalance(prev => ({ ...prev, accruedYield: prev.accruedYield + numAmount }));
           setStatusMsg({ text: `✓ Injected $${numAmount} USDG yield into vault buffer! Ready for auto-DCA.` });
         }
+
+        // Re-fetch real on-chain balances after tx confirmation
+        await fetchBalances();
       } else {
         // Graceful state simulation
         if (tab === 'deposit') {
@@ -132,14 +175,30 @@ export default function VaultPage() {
               </p>
             </div>
 
-            <a
-              href="https://faucet.paxos.com"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-semibold hover:bg-accent/20 transition-colors w-fit"
-            >
-              <Droplets size={14} /> Get Testnet USDG Faucet <ExternalLink size={12} />
-            </a>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground bg-card px-3 py-2 rounded-lg border border-border">
+                <Radio size={12} className="text-accent animate-pulse" />
+                <span className="font-mono">{activeAddress.slice(0, 6)}...{activeAddress.slice(-4)}</span>
+                <span className="text-[10px] text-accent font-semibold px-1.5 py-0.5 rounded bg-accent/15 border border-accent/30">Robinhood Testnet</span>
+                <button
+                  onClick={fetchBalances}
+                  disabled={isFetchingBalances}
+                  title="Refresh live on-chain balances"
+                  className="ml-1 text-muted-foreground hover:text-accent transition-colors"
+                >
+                  <RefreshCw size={12} className={isFetchingBalances ? "animate-spin" : ""} />
+                </button>
+              </div>
+
+              <a
+                href="https://faucet.paxos.com"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-semibold hover:bg-accent/20 transition-colors w-fit"
+              >
+                <Droplets size={14} /> Get Testnet USDG Faucet <ExternalLink size={12} />
+              </a>
+            </div>
           </div>
 
           {/* Vault Stats */}
@@ -150,7 +209,7 @@ export default function VaultPage() {
               </p>
               <div className="space-y-1">
                 <p className="text-3xl font-bold text-foreground">
-                  ${userBalance.shares.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ${userBalance.shares.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {userBalance.shares.toLocaleString()} nvUSDG Shares (1:1)
@@ -238,9 +297,12 @@ export default function VaultPage() {
                   <label className="block text-sm font-medium text-foreground">
                     {tab === 'deposit' ? 'Deposit Amount (USDG)' : tab === 'withdraw' ? 'Withdraw Amount (USDG)' : 'Simulate External Yield Inflow (USDG)'}
                   </label>
-                  <span className="text-xs text-muted-foreground">
-                    Wallet: ${userBalance.usdgWallet} USDG
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      {tab === 'withdraw' ? `Vault Balance: $${userBalance.shares.toFixed(2)} nvUSDG` : `Wallet: $${userBalance.usdgWallet.toFixed(2)} USDG`}
+                    </span>
+                    {isFetchingBalances && <RefreshCw size={10} className="animate-spin text-accent" />}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -255,6 +317,32 @@ export default function VaultPage() {
                     className="px-4 py-3 bg-secondary border border-border rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:border-accent transition-colors"
                   >
                     Max
+                  </button>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="flex items-center gap-1.5 mt-2">
+                  <span className="text-[11px] text-muted-foreground mr-1">Presets:</span>
+                  {['5', '10', '25', '50'].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setAmount(preset)}
+                      className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+                        amount === preset
+                          ? 'bg-accent/20 border-accent text-accent font-semibold'
+                          : 'bg-secondary border-border text-muted-foreground hover:text-foreground hover:border-border/80'
+                      }`}
+                    >
+                      ${preset}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setAmount(tab === 'withdraw' ? userBalance.shares.toString() : userBalance.usdgWallet.toString())}
+                    className="text-xs px-2.5 py-1 rounded border border-border text-muted-foreground hover:text-foreground bg-secondary transition-colors"
+                  >
+                    Max ({tab === 'withdraw' ? `$${userBalance.shares.toFixed(0)}` : `$${userBalance.usdgWallet.toFixed(0)}`})
                   </button>
                 </div>
               </div>
@@ -299,10 +387,10 @@ export default function VaultPage() {
                   {loading
                     ? "Submitting Transaction..."
                     : tab === 'deposit'
-                      ? 'Deposit Paxos USDG'
+                      ? `Deposit ${amount || '0'} Paxos USDG`
                       : tab === 'withdraw'
-                        ? 'Withdraw USDG Instantly (T+0)'
-                        : 'Inject 25 USDG Yield Batch'}
+                        ? `Withdraw ${amount || '0'} USDG Instantly (T+0)`
+                        : `Inject ${amount || '0'} USDG Yield Batch`}
                 </span>
               </button>
 
