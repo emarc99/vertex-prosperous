@@ -57,6 +57,37 @@ All core protocol contracts and stock token adapters are deployed, verified, and
 
 ---
 
+## 🧪 Testing & Verification
+
+### 1. Verified Live On-Chain Testnet Transactions (Robinhood Chain Blockscout)
+All core protocol flows have been executed and confirmed on **Robinhood Chain Testnet (Chain ID: 46630)** from deployer wallet `0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7`:
+
+| Action / Flow | Block | Transaction Hash | Explorer Link | Status |
+| :--- | :---: | :--- | :---: | :---: |
+| **1. Configure Thematic Basket** (60% TSLA, 40% AMZN) | `#128666287` | `0x6e0921b5857568d1ffdecadff9d18688b5ca4563991dd45b2e442564fc5af439` | [Blockscout](https://explorer.testnet.chain.robinhood.com/tx/0x6e0921b5857568d1ffdecadff9d18688b5ca4563991dd45b2e442564fc5af439) | ✅ Confirmed |
+| **2. Authorize Session Key Bot** (ERC-4337 DCA Daemon) | `#128666309` | `0xa5bafca75912147cdc07ed07b52245f6f65d7fdd4be9cdc9a58d8f262b0df8fc` | [Blockscout](https://explorer.testnet.chain.robinhood.com/tx/0xa5bafca75912147cdc07ed07b52245f6f65d7fdd4be9cdc9a58d8f262b0df8fc) | ✅ Confirmed |
+| **3. Deposit Principal** (10.00 Paxos USDG into Smart Vault) | `#128666407` | `0x4b11c57c53a1976181bef6a977cda53d30c0c5deaeb3b97cd962ba539864424b` | [Blockscout](https://explorer.testnet.chain.robinhood.com/tx/0x4b11c57c53a1976181bef6a977cda53d30c0c5deaeb3b97cd962ba539864424b) | ✅ Confirmed |
+| **4. Inject External Yield** (+5.00 USDG Simulated Yield) | `#128666436` | `0x7257d4e532a96a89e1af680518fea40c897e3aad9fd1b29a6acd71db23f93c8b` | [Blockscout](https://explorer.testnet.chain.robinhood.com/tx/0x7257d4e532a96a89e1af680518fea40c897e3aad9fd1b29a6acd71db23f93c8b) | ✅ Confirmed |
+
+**Live Post-Execution Telemetry (Robinhood Chain RPC):**
+* **Total Vault Assets**: `15.00 USDG`
+* **Total Principal Deposited**: `10.00 USDG` (100% Intact — Mathematically Safe from Market Downside)
+* **Accrued Harvestable Yield**: `5.00 USDG` (Unlocked for Autonomous Stock Token Streaming)
+
+### 1. End-to-End DCA Simulation
+Simulates the complete protocol lifecycle on a local fork, verifying zero-principal-loss equity acquisition:
+```bash
+node scripts/simulate_dca.js
+```
+
+---
+
+## 📐 Architectural Blueprint
+
+For an in-depth technical specification of protocol mechanics, mathematical invariants, and account abstraction policies, refer to the [NovaWealth Master Blueprint](BLUEPRINT.md).
+
+---
+
 ## 🏗️ Architecture & Capital Flow
 
 ```
@@ -98,8 +129,6 @@ All core protocol contracts and stock token adapters are deployed, verified, and
 ---
 
 ## 📱 Web Application Experience & Features
-
-NovaWealth features a sleek Robinhood dark-theme design (`#080a0e`, `#00c805`) built with Next.js 14 and Vanilla CSS / Tailwind tokens:
 
 ### 1. Dashboard (`/dashboard`)
 * **Dual Data Source Toggle**:
@@ -157,45 +186,6 @@ In automated investment frameworks, **capital velocity** dictates true investor 
 ### 5. Autonomous Yield Bot & Session Keys (`agent/yield_bot.js`)
 An automated node daemon monitors `NovaVault` telemetry. When `accruedYield()` crosses the threshold (e.g. 5 USDG), the daemon signs on behalf of authorized session keys without requiring interactive user approvals.
 
----
-
-## 🧪 Testing & Verification
-
-The protocol contains 10 passing unit tests and an end-to-end autonomous simulation script:
-
-```bash
-# Run unit test suite
-npm test
-```
-
-### Test Suite Output:
-```text
-  NovaWealth Protocol Suite — Robinhood Chain Architecture
-    1. Smart Cash Vault (ERC-4626 & Principal Accounting)
-      ✔ Should accept 6-decimal USDG deposit and issue 1:1 shares
-      ✔ Should accurately track protocol yield accrual without altering principal
-      ✔ Should support instantaneous T+0 redemptions of user principal
-    2. StockTokenAdapter & Pricing Feeds
-      ✔ Should convert 6-decimal USDG to 18-decimal Stock Tokens accurately
-      ✔ Should calculate fractional stock token amounts precisely
-      ✔ Should handle ERC-8056 corporate split multiplier properly
-    3. Autonomous Yield Streaming & No-Principal-Risk DCA
-      ✔ Should allow Alice to configure a multi-asset thematic basket (196ms)
-      ✔ Should stream strictly accrued yield into stock tokens with zero risk to principal
-      ✔ Should prevent spending beyond accrued yield (principal safeguard) (111ms)
-      ✔ Should enforce session-key daily spend limits
-
-  10 passing (10s)
-```
-
-### End-to-End DCA Simulation:
-```bash
-# Run autonomous execution simulation script
-node scripts/simulate_dca.js
-```
-
----
-
 ## 💻 Local Development & Deployment
 
 ### Prerequisites
@@ -214,27 +204,23 @@ npm run dev
 # http://localhost:3000
 ```
 
-### Deploying to Vercel
-NovaWealth is pre-configured with `vercel.json` for zero-configuration, 1-click deployment on [Vercel](https://vercel.com):
-```bash
-# Using Vercel CLI
-vercel --prod
-```
-
 ---
 
 ## 🏆 Hackathon Tracks & Sponsor Alignment
 
-1. **Robinhood Chain Track**:
-   * Direct showcase for Robinhood's **Stock Tokens** (TSLA, AMZN, AMD, NFLX, PLTR) with full ERC-8056 multiplier compliance.
-   * Built specifically for the **28.6 million retail Robinhood users** who demand automated, zero-stress wealth building.
-2. **Paxos USDG Bounty Track**:
-   * Positions **Paxos USDG** as the bedrock high-yield savings currency powering the entire protocol.
-3. **Real-World Asset (RWA) & Capital Efficiency**:
-   * Bridges onchain stablecoin lending yield directly into tokenized equities with **zero risk to initial capital**.
-   * Implements **Instant T+0 Liquidity Fronting** to eliminate multi-day redemption delays for everyday users.
+* **Robinhood Chain Track**:
+  * Native deployment to **Robinhood Chain Testnet (Chain ID: 46630)**.
+  * Direct interaction with Robinhood Stock Tokens (`TSLA`, `AMZN`, `AMD`, `NFLX`, `PLTR`).
+  * On-chain integration of **ERC-8056 Scaled UI Amount Extension** (`uiMultiplier()`) for corporate stock split handling.
+* **Paxos USDG Bounty Track**:
+  * **Paxos USDG (6 decimals)** is the foundational settlement currency for savings deposits, Morpho Blue lending vaults, and equity stream DCA.
+  * Instant T+0 liquidity fronting via a 15% dedicated buffer solving the classic RWA lockup problem.
+* **RWA & Consumer Track**:
+  * Consumer-grade retail wealth building: 1-click Biometric Passkeys (ERC-4337) with sponsored gas via Paymaster.
+  * Mathematical zero-principal-risk invariant protecting retail savings while building long-term equity exposure.
 
 ---
 
+
 ## 📄 License
-MIT License. Built with ❤️ for the Arbitrum Open House Singapore Buildathon.
+MIT License. Built with precise ❤️ for the Arbitrum Open House Singapore Buildathon.

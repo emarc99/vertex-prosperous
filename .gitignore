@@ -16,3 +16,6 @@ typechain-types/
 .DS_Store
 *.log
 *.tsbuildinfo
+.vercel
+*.pdf
+verify_onchain_testnet.js
