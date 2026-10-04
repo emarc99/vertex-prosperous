@@ -263,11 +263,6 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground font-medium">
                   Accrued Yield {isLive ? "(Live On-Chain)" : "(Projected)"}
                 </p>
-                {isLive && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30">
-                    REAL
-                  </span>
-                )}
               </div>
               <div className="space-y-1">
                 <p className="text-3xl font-bold text-foreground font-mono">
