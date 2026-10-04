@@ -66,10 +66,20 @@ async function runYieldBot() {
       if (yieldAccrued >= BATCH_THRESHOLD_USDG) {
         console.log(`[!] Yield threshold reached (${ethers.formatUnits(yieldAccrued, 6)} >= 5.0 USDG).`);
         if (signer) {
-          console.log(`[+] Executing autonomous DCA for registered subscribers...`);
-          // Execute stream for active users
+          console.log(`[+] Checking authorized session keys for active subscribers...`);
+          const targetUser = process.env.SUBSCRIBER_ADDRESS || signer.address;
+          const isAuthorized = await streamer.authorizedExecutors(targetUser, signer.address).catch(() => false);
+          if (isAuthorized) {
+            console.log(`[+] Session key confirmed for ${targetUser}. Dispatching streamYield transaction...`);
+            const tx = await streamer.streamYield(targetUser, BATCH_THRESHOLD_USDG);
+            console.log(`[✔] DCA stream transaction dispatched: ${tx.hash}`);
+            await tx.wait();
+            console.log(`[✔] Transaction confirmed on Robinhood Chain!`);
+          } else {
+            console.log(`[i] Subscriber ${targetUser} session key standing by. Ready for automated execution.`);
+          }
         } else {
-          console.log(`[i] Autonomous execution armed and ready.`);
+          console.log(`[i] Autonomous execution armed and ready (read-only telemetry mode).`);
         }
       } else {
         console.log(`[✔] Vault healthy. Yield accumulating below trigger threshold.`);
