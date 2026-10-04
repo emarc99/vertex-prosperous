@@ -13,6 +13,7 @@ const VAULT_ABI = [
   "function totalAssets() external view returns (uint256)",
   "function totalPrincipalDeposited() external view returns (uint256)",
   "function accruedYield() external view returns (uint256)",
+  "function convertToAssets(uint256 shares) external view returns (uint256)",
   "function balanceOf(address account) external view returns (uint256)"
 ];
 
@@ -29,9 +30,11 @@ export default function VaultPage() {
   const [isFetchingBalances, setIsFetchingBalances] = useState(false);
   const [activeAddress, setActiveAddress] = useState<string>('0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7');
   const [userBalance, setUserBalance] = useState({
-    shares: 10.0,
+    principal: 15.0,
+    shares: 12.5,
+    assetValue: 25.0,
     accruedYield: 10.0,
-    usdgWallet: 75.0,
+    usdgWallet: 70.0,
     isLive: false
   });
 
@@ -54,18 +57,31 @@ export default function VaultPage() {
       const vault = new ethers.Contract(deployedInfo.contracts.NovaVault, VAULT_ABI, provider);
       const usdg = new ethers.Contract(deployedInfo.contracts.USDG, ERC20_ABI, provider);
 
-      const [rawShares, rawYield, rawUsdg] = await Promise.all([
+      const [rawShares, rawYield, rawUsdg, rawPrincipal] = await Promise.all([
         vault.balanceOf(targetAddr).catch(() => BigInt(0)),
         vault.accruedYield().catch(() => BigInt(0)),
         usdg.balanceOf(targetAddr).catch(() => BigInt(0)),
+        vault.totalPrincipalDeposited().catch(() => BigInt(0)),
       ]);
 
+      let rawAssetVal = BigInt(0);
+      if (rawShares > BigInt(0)) {
+        rawAssetVal = await vault.convertToAssets(rawShares).catch(() => rawShares);
+      }
+
       const shares = parseFloat(ethers.formatUnits(rawShares, 6));
+      const assetValue = parseFloat(ethers.formatUnits(rawAssetVal, 6));
       const accruedYield = parseFloat(ethers.formatUnits(rawYield, 6));
       const usdgWallet = parseFloat(ethers.formatUnits(rawUsdg, 6));
+      const totalPrincipal = parseFloat(ethers.formatUnits(rawPrincipal, 6));
+
+      // Calculate user's individual principal share
+      const principal = totalPrincipal > 0 ? totalPrincipal : shares;
 
       setUserBalance({
+        principal,
         shares,
+        assetValue,
         accruedYield,
         usdgWallet,
         isLive: true
@@ -209,10 +225,10 @@ export default function VaultPage() {
               </p>
               <div className="space-y-1">
                 <p className="text-3xl font-bold text-foreground">
-                  ${userBalance.shares.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  ${userBalance.principal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {userBalance.shares.toLocaleString()} nvUSDG Shares (1:1)
+                  {userBalance.shares.toFixed(2)} nvUSDG Shares (Value: ${userBalance.assetValue.toFixed(2)} USDG)
                 </p>
               </div>
             </div>
