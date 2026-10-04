@@ -8,7 +8,7 @@ const features = [
   {
     icon: WalletCards,
     title: 'Smart Cash (Paxos USDG)',
-    text: 'Deposit Paxos USDG into our ERC-4626 vault with 8.45% APY on Morpho Blue and guaranteed T+0 instant liquidity on Robinhood Chain.'
+    text: "Deposit Paxos USDG into our ERC-4626 vault with ~8.45% APY aligned with Robinhood Earn's MetaMorpho infrastructure and guaranteed T+0 instant liquidity."
   },
   {
     icon: TrendingUp,
@@ -66,7 +66,7 @@ export default function LandingPage() {
             Make your money <span className="text-accent">move.</span>
           </h1>
           <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
-            NovaWealth activates idle stablecoin savings with Morpho Blue yields, instant T+0 liquidity, and automated zero-risk DCA into Robinhood Stock Tokens.
+            NovaWealth activates idle stablecoin savings with high-yield cash rails, instant T+0 liquidity, and automated zero-risk DCA into Robinhood Stock Tokens.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link

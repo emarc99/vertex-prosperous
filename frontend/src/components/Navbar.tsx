@@ -87,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             borderRadius: "var(--radius-full)",
             fontSize: "0.8rem"
           }}>
-            <span style={{ color: "var(--text-muted)" }}>Morpho Earn APY:</span>
+            <span style={{ color: "var(--text-muted)" }}>Robinhood Earn APY:</span>
             <span style={{ color: "var(--accent-green)", fontWeight: 700 }}>8.45%</span>
           </div>
 

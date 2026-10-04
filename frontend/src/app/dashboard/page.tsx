@@ -23,6 +23,7 @@ export default function Dashboard() {
     accruedYield: number;
     totalPrincipal: number;
     totalAssets: number;
+    totalHarvested: number;
     userShares: number;
     loading: boolean;
     lastUpdated: string;
@@ -30,6 +31,7 @@ export default function Dashboard() {
     accruedYield: 0.0,
     totalPrincipal: 0.0,
     totalAssets: 0.0,
+    totalHarvested: 0.0,
     userShares: 0.0,
     loading: true,
     lastUpdated: 'Fetching on-chain data...'
@@ -47,15 +49,17 @@ export default function Dashboard() {
       const provider = new ethers.JsonRpcProvider(deployedInfo.rpcUrl);
       const vault = new ethers.Contract(deployedInfo.contracts.NovaVault, VAULT_ABI, provider);
 
-      const [rawAccrued, rawPrincipal, rawAssets] = await Promise.all([
+      const [rawAccrued, rawPrincipal, rawAssets, rawHarvested] = await Promise.all([
         vault.accruedYield().catch(() => BigInt(0)),
         vault.totalPrincipalDeposited().catch(() => BigInt(0)),
         vault.totalAssets().catch(() => BigInt(0)),
+        vault.totalYieldHarvested().catch(() => BigInt(0)),
       ]);
 
       const accrued = parseFloat(ethers.formatUnits(rawAccrued, 6));
       const principal = parseFloat(ethers.formatUnits(rawPrincipal, 6));
       const assets = parseFloat(ethers.formatUnits(rawAssets, 6));
+      const harvested = parseFloat(ethers.formatUnits(rawHarvested, 6));
 
       // Check if user has connected address in localStorage
       let userShares = 0.0;
@@ -71,6 +75,7 @@ export default function Dashboard() {
         accruedYield: accrued,
         totalPrincipal: principal,
         totalAssets: assets,
+        totalHarvested: harvested,
         userShares,
         loading: false,
         lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -100,9 +105,9 @@ export default function Dashboard() {
   const isLive = dataSource === 'live';
   const displayYield = isLive ? onchainData.accruedYield : demoYield;
   const displayPrincipal = isLive ? onchainData.totalPrincipal : demoPrincipal;
-  const displayEquities = isLive ? 0.0 : demoEquities;
+  const displayEquities = isLive ? onchainData.totalHarvested : demoEquities;
   const displayTotalWealth = isLive
-    ? onchainData.totalAssets
+    ? (onchainData.totalAssets + onchainData.totalHarvested)
     : (demoPrincipal + demoEquities + demoYield);
 
   return (
@@ -322,7 +327,7 @@ export default function Dashboard() {
               <div className="bg-secondary/70 border border-border p-4 rounded-lg text-center">
                 <p className="text-xs text-muted-foreground font-medium">Step 1: Cash Savings</p>
                 <p className="text-sm font-bold text-foreground mt-1">NovaVault (nvUSDG)</p>
-                <p className="text-[11px] text-accent mt-0.5">8.45% APY on Morpho Blue</p>
+                <p className="text-[11px] text-accent mt-0.5">8.45% APY (MetaMorpho Standard)</p>
               </div>
 
               <div className="flex items-center justify-center">

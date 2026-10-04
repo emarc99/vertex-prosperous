@@ -39,7 +39,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
       } else if (tab === "yield") {
         await onSimulateYield(num);
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-        setSuccessMsg(`Simulated +$${num} USDG Morpho lending interest accrued!`);
+        setSuccessMsg(`Simulated +$${num} USDG lending interest accrued!`);
       }
       setTimeout(() => setSuccessMsg(""), 5000);
     } catch (e: any) {
@@ -60,7 +60,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
           <div>
             <h3 style={{ fontSize: "1.2rem", fontWeight: 700 }}>Smart Cash Vault</h3>
             <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-              ERC-4626 Paxos USDG • 8.45% Morpho Yield
+              ERC-4626 Paxos USDG • 8.45% APY MetaMorpho Rail
             </span>
           </div>
           <div className="badge badge-green">
@@ -202,7 +202,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
         }}>
           {tab === "deposit" && (
             <p>
-              Deposits are converted 1:1 into <strong style={{ color: "#fff" }}>nvUSDG</strong> shares. 85% is deployed to Morpho Blue lending pools for yield, while 15% is reserved for immediate T+0 liquidity.
+              Deposits are converted 1:1 into <strong style={{ color: "#fff" }}>nvUSDG</strong> shares. 85% is deployed to MetaMorpho lending vaults for yield, while 15% is reserved for immediate T+0 liquidity.
             </p>
           )}
           {tab === "withdraw" && (
@@ -212,7 +212,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
           )}
           {tab === "yield" && (
             <p>
-              <strong style={{ color: "#00D8F6" }}>Yield Simulator:</strong> Injects testnet USDG yield into the vault to simulate daily Morpho interest payments, enabling you to test the autonomous Stock DCA stream!
+              <strong style={{ color: "#00D8F6" }}>Yield Simulator:</strong> Injects testnet USDG yield into the vault to simulate MetaMorpho interest payments, enabling you to test the autonomous Stock DCA stream on Robinhood Chain!
             </p>
           )}
         </div>
@@ -257,7 +257,7 @@ export const SmartCashVault: React.FC<SmartCashVaultProps> = ({
           </>
         ) : (
           <>
-            <span>Accrue Morpho Yield</span>
+            <span>Inject Simulated Yield</span>
             <Sparkles size={16} />
           </>
         )}

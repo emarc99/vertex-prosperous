@@ -78,7 +78,7 @@ export default function VaultPage() {
           }));
           setStatusMsg({ text: `✓ Successfully redeemed $${numAmount} USDG instantly at T+0!` });
         } else if (tab === 'yield') {
-          setStatusMsg({ text: "Injecting simulated Morpho lending yield..." });
+          setStatusMsg({ text: "Injecting simulated lending yield..." });
           const appTx = await usdg.approve(deployedInfo.contracts.NovaVault, parsedAmount);
           await appTx.wait(1);
           const injTx = await vault.injectYield(parsedAmount);
@@ -166,7 +166,7 @@ export default function VaultPage() {
               <div className="space-y-1">
                 <p className="text-3xl font-bold text-accent">8.45%</p>
                 <p className="text-xs text-muted-foreground">
-                  Morpho Blue Lending Yield
+                  MetaMorpho Standard Rail
                 </p>
               </div>
             </div>

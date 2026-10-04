@@ -111,7 +111,7 @@ export const HeroMetric: React.FC<HeroMetricProps> = ({
             </span>
           </div>
           <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginTop: "6px" }}>
-            Your cash principal earns yield on Morpho, which auto-streams into tokenized US stocks.
+            Your cash principal earns baseline yield, which auto-streams into tokenized US stocks.
           </p>
         </div>
 

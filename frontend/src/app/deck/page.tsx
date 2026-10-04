@@ -47,7 +47,7 @@ export default function DeckPage() {
           </div>
           <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
             <p className="text-3xl lg:text-4xl font-bold tracking-tight text-[#15803d] font-mono">8.45%</p>
-            <p className="text-xs text-black/60 mt-1 font-medium">Morpho USDG Lending APY</p>
+            <p className="text-xs text-black/60 mt-1 font-medium">Robinhood Earn APY (MetaMorpho)</p>
           </div>
           <div className="p-4 rounded-xl bg-white/70 border border-black/5 shadow-sm">
             <p className="text-3xl lg:text-4xl font-bold tracking-tight text-black font-mono">T+0</p>
@@ -76,7 +76,7 @@ export default function DeckPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-black/60">02 / The Mechanism</p>
             <h2 className="mt-16 text-3xl font-semibold tracking-tight text-black">Yield becomes momentum.</h2>
             <p className="mt-4 leading-7 text-black/75">
-              Deposited Paxos USDG earns 8.45% APY on Morpho Blue. Our smart vault isolates accrued interest and streams it into Robinhood Stock Tokens via autonomous DCA.
+              Deposited Paxos USDG earns ~8.45% APY aligned with Robinhood Earn's MetaMorpho infrastructure. Our smart vault isolates accrued interest and streams it into Robinhood Stock Tokens via autonomous DCA.
             </p>
           </div>
           <div className="mt-8 pt-4 border-t border-black/10 text-xs font-semibold uppercase tracking-wider text-black/50">
@@ -142,7 +142,7 @@ export default function DeckPage() {
               </div>
               <h3 className="text-xl font-bold text-black mb-2">Yield Harvest Isolator</h3>
               <p className="text-xs text-black/60 mb-4 leading-relaxed">
-                Captures baseline 8.45% APY from Morpho Blue lending pools while maintaining a 15% instant T+0 liquidity buffer.
+                Captures baseline 8.45% APY aligned with Robinhood Earn MetaMorpho vaults while maintaining a 15% instant T+0 liquidity buffer.
               </p>
               <div className="p-3 rounded-lg bg-[#f8f7f3] border border-black/5 text-[11px] font-mono text-black/80 space-y-1">
                 <div className="flex justify-between">
@@ -318,7 +318,7 @@ export default function DeckPage() {
                 </div>
                 <h3 className="text-2xl font-semibold text-white mb-3">Instant Yield Routing</h3>
                 <p className="text-sm text-white/80 mb-6 leading-relaxed">
-                  Capital is <strong>never idle for a single block</strong>. 100% of deposited USDG generates 8.45% APY in Morpho Blue until the exact transaction the copilot atomically harvests yield and settles stock tokens.
+                  Capital is <strong>never idle for a single block</strong>. 100% of deposited USDG generates 8.45% APY in cash yield rails until the exact transaction the copilot atomically harvests yield and settles stock tokens.
                 </p>
                 <div className="space-y-3 border-t border-white/10 pt-4 text-xs text-white/85">
                   <div className="flex items-center gap-2">
@@ -368,7 +368,7 @@ export default function DeckPage() {
               </div>
               <h4 className="text-lg font-bold mb-2">Instant T+0 Liquidity Buffer</h4>
               <p className="text-xs font-mono bg-white p-2 rounded border border-black/10 text-black/80 mb-3">
-                15% Liquid Buffer / 85% Morpho Pool
+                15% Liquid Buffer / 85% MetaMorpho Rail
               </p>
               <p className="text-sm text-black/70">
                 Solves the classic RWA dilemma where funds take 30–180 days to redeem. Users can withdraw cash instantly 24/7/365 with zero settlement delay.
@@ -410,7 +410,7 @@ export default function DeckPage() {
           </div>
           <div className="border-t border-black/15 pt-5">
             <p className="text-5xl font-semibold tracking-[-.06em]">8.45%</p>
-            <p className="mt-3 text-sm text-black/60">Baseline Morpho Blue lending APY converting idle savings into stock tokens.</p>
+            <p className="mt-3 text-sm text-black/60">Baseline Robinhood Earn lending APY converting idle savings into stock tokens.</p>
           </div>
           <div className="border-t border-black/15 pt-5">
             <p className="text-5xl font-semibold tracking-[-.06em]">T+0</p>

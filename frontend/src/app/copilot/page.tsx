@@ -17,7 +17,7 @@ export default function CopilotPage() {
       id: '1',
       type: 'bot',
       content:
-        "Hello! I am your NovaWealth Autonomous Copilot on Robinhood Chain. I monitor Morpho Blue lending pools, track your Paxos USDG vault yield, and execute your multi-asset equity DCA via scoped session keys. How can I help you today?",
+        "Hello! I am your NovaWealth Autonomous Copilot on Robinhood Chain. I monitor your Paxos USDG vault yield, track Robinhood Earn MetaMorpho lending rates, and execute your multi-asset equity DCA via scoped session keys. How can I help you today?",
       timestamp: '08:00 PM',
     },
   ]);
@@ -46,9 +46,9 @@ export default function CopilotPage() {
       let response = "I can analyze your portfolio, trigger automated DCA rebalancing, or explain your T+0 liquidity buffer. Try asking about your principal safety, USDG yield, or Robinhood Stock Tokens.";
 
       if (lower.includes("principal") || lower.includes("safe") || lower.includes("protect")) {
-        response = "🛡️ Your initial USDG principal is 100% protected. NovaVault strictly records totalPrincipalDeposited. Only excess yield generated from Morpho Blue lending can ever be harvested for stock token purchases. Your deposit can never be lost.";
+        response = "🛡️ Your initial USDG principal is 100% protected. NovaVault strictly records totalPrincipalDeposited. Only excess yield generated from the lending strategy can ever be harvested for stock token purchases. Your deposit can never be lost.";
       } else if (lower.includes("yield") || lower.includes("apy") || lower.includes("earn")) {
-        response = "📈 NovaVault is currently generating 8.45% APY on Paxos USDG via Morpho Blue lending markets. You have $34.20 in accrued yield ready for autonomous streaming.";
+        response = "📈 NovaVault is currently generating ~8.45% APY on Paxos USDG aligned with Robinhood Earn's MetaMorpho infrastructure. You have accrued yield ready for autonomous streaming.";
       } else if (lower.includes("t+0") || lower.includes("withdraw") || lower.includes("liquid")) {
         response = "⚡ NovaVault maintains an onchain 15% instant liquidity buffer. Whenever you request a withdrawal, your cash principal is redeemed instantly at T+0 without waiting for external lending recall.";
       } else if (lower.includes("stock") || lower.includes("token") || lower.includes("basket") || lower.includes("tsla")) {
