@@ -1,8 +1,10 @@
 'use client';
 
 import { Navigation } from '@/components/nav';
-import { MessageSquare, Send, Bot, Sparkles, Terminal, Activity } from 'lucide-react';
-import { useState } from 'react';
+import { MessageSquare, Send, Bot, Sparkles, Terminal, Activity, Radio, RefreshCw, ShieldCheck } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
+import deployedInfo from '@/contracts/deployed.json';
 
 interface Message {
   id: string;
@@ -11,7 +13,70 @@ interface Message {
   timestamp: string;
 }
 
+const VAULT_ABI = [
+  "function totalAssets() external view returns (uint256)",
+  "function totalPrincipalDeposited() external view returns (uint256)",
+  "function accruedYield() external view returns (uint256)"
+];
+
+const ERC20_ABI = [
+  "function balanceOf(address account) external view returns (uint256)"
+];
+
 export default function CopilotPage() {
+  const [liveStats, setLiveStats] = useState({
+    principal: 15.0,
+    accruedYield: 5.0,
+    totalAssets: 20.0,
+    tsla: 8.0235,
+    amzn: 8.0215,
+    isLoaded: false
+  });
+  const [activeAddress, setActiveAddress] = useState<string>('0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7');
+
+  const fetchLiveTelemetry = useCallback(async () => {
+    try {
+      let targetAddr = '0xb8AD2787f447e04E8D66D7e888Dd48fB68DdedB7';
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("nova_user_address");
+        if (stored && ethers.isAddress(stored)) {
+          targetAddr = stored;
+        } else if ((window as any).ethereum?.selectedAddress) {
+          targetAddr = (window as any).ethereum.selectedAddress;
+        }
+      }
+      setActiveAddress(targetAddr);
+
+      const provider = new ethers.JsonRpcProvider(deployedInfo.rpcUrl);
+      const vault = new ethers.Contract(deployedInfo.contracts.NovaVault, VAULT_ABI, provider);
+      const tsla = new ethers.Contract(deployedInfo.stockTokens.TSLA.address, ERC20_ABI, provider);
+      const amzn = new ethers.Contract(deployedInfo.stockTokens.AMZN.address, ERC20_ABI, provider);
+
+      const [rawAssets, rawPrincipal, rawYield, rawTsla, rawAmzn] = await Promise.all([
+        vault.totalAssets().catch(() => BigInt(0)),
+        vault.totalPrincipalDeposited().catch(() => BigInt(0)),
+        vault.accruedYield().catch(() => BigInt(0)),
+        tsla.balanceOf(targetAddr).catch(() => BigInt(0)),
+        amzn.balanceOf(targetAddr).catch(() => BigInt(0)),
+      ]);
+
+      setLiveStats({
+        totalAssets: parseFloat(ethers.formatUnits(rawAssets, 6)),
+        principal: parseFloat(ethers.formatUnits(rawPrincipal, 6)),
+        accruedYield: parseFloat(ethers.formatUnits(rawYield, 6)),
+        tsla: parseFloat(ethers.formatUnits(rawTsla, 18)),
+        amzn: parseFloat(ethers.formatUnits(rawAmzn, 18)),
+        isLoaded: true
+      });
+    } catch (err) {
+      console.warn("Could not query Robinhood testnet RPC in Copilot:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLiveTelemetry();
+  }, [fetchLiveTelemetry]);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -40,21 +105,21 @@ export default function CopilotPage() {
     const query = input;
     setInput('');
 
-    // Contextual response
+    // Contextual response with LIVE on-chain telemetry data
     setTimeout(() => {
       const lower = query.toLowerCase();
-      let response = "I can analyze your portfolio, trigger automated DCA rebalancing, or explain your T+0 liquidity buffer. Try asking about your principal safety, USDG yield, or Robinhood Stock Tokens.";
+      let response = `I can analyze your portfolio, trigger automated DCA rebalancing, or explain your T+0 liquidity buffer. Currently monitoring your $${liveStats.principal.toFixed(2)} USDG vault principal on Robinhood Chain.`;
 
       if (lower.includes("principal") || lower.includes("safe") || lower.includes("protect")) {
-        response = "🛡️ Your initial USDG principal is 100% protected. NovaVault strictly records totalPrincipalDeposited. Only excess yield generated from the lending strategy can ever be harvested for stock token purchases. Your deposit can never be lost.";
-      } else if (lower.includes("yield") || lower.includes("apy") || lower.includes("earn")) {
-        response = "📈 NovaVault is currently generating ~8.45% APY on Paxos USDG aligned with Robinhood Earn's MetaMorpho infrastructure. You have accrued yield ready for autonomous streaming.";
+        response = `🛡️ Your initial USDG principal ($${liveStats.principal.toFixed(2)} USDG) is 100% protected on Robinhood Chain. NovaVault strictly isolates totalPrincipalDeposited. Only accrued yield ($${liveStats.accruedYield.toFixed(2)} USDG currently available) can ever be harvested for equities. Your deposit principal can never be lost.`;
+      } else if (lower.includes("yield") || lower.includes("apy") || lower.includes("earn") || lower.includes("balance")) {
+        response = `📈 NovaVault currently holds $${liveStats.totalAssets.toFixed(2)} USDG total assets ($${liveStats.principal.toFixed(2)} principal + $${liveStats.accruedYield.toFixed(2)} accrued yield). The lending strategy generates ~8.45% APY aligned with Robinhood Earn's MetaMorpho rails.`;
       } else if (lower.includes("t+0") || lower.includes("withdraw") || lower.includes("liquid")) {
-        response = "⚡ NovaVault maintains an onchain 15% instant liquidity buffer. Whenever you request a withdrawal, your cash principal is redeemed instantly at T+0 without waiting for external lending recall.";
-      } else if (lower.includes("stock") || lower.includes("token") || lower.includes("basket") || lower.includes("tsla")) {
-        response = "🎯 Your target DCA basket is configured for 60% TSLA and 40% AMZN. Stock Token Adapter queries Chainlink 8-decimal feeds and applies ERC-8056 multipliers for any corporate actions.";
-      } else if (lower.includes("session") || lower.includes("passkey") || lower.includes("key")) {
-        response = "🔑 Your ERC-4337 session key is scoped to a maximum daily spend of $50 USDG. The copilot can only stream accrued yield within your pre-approved daily budget.";
+        response = `⚡ NovaVault maintains an onchain 15% instant liquidity buffer. You can redeem your $${liveStats.principal.toFixed(2)} USDG principal instantly at T+0 with zero settlement delay.`;
+      } else if (lower.includes("stock") || lower.includes("token") || lower.includes("basket") || lower.includes("tsla") || lower.includes("amzn")) {
+        response = `🎯 Your on-chain portfolio currently holds ${liveStats.tsla.toFixed(4)} TSLA and ${liveStats.amzn.toFixed(4)} AMZN tokens on Robinhood Chain (ERC-8056). Your target DCA basket is set to 60% TSLA and 40% AMZN, priced via Chainlink price feeds.`;
+      } else if (lower.includes("session") || lower.includes("passkey") || lower.includes("key") || lower.includes("bot")) {
+        response = `🔑 Your ERC-4337 session key daemon (agent/yield_bot.js) is armed and monitoring Robinhood Chain. It triggers automated streamYield() batches whenever accrued yield crosses the $5.00 USDG threshold, within your $50 daily spend budget.`;
       }
 
       const botMsg: Message = {
@@ -68,7 +133,7 @@ export default function CopilotPage() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    }, 700);
+    }, 500);
   };
 
   return (
