@@ -11,12 +11,12 @@
 * **The Idle Capital Problem**: Billions of dollars in tokenized stablecoins and cash equivalents sit idle onchain without productive utility.
 * **The Retail Dilemma**: Everyday savers face a harsh binary choice: either keep money safe in idle cash earning modest yields, or expose their principal to volatile markets.
 * **Redemption Friction**: Traditional funds take days or weeks to redeem, creating a severe liquidity gap with DeFi's expectations.
-* **Composability-First Architecture**: NovaWealth embraces open composability, built for seamless circulation, automated yields on Morpho, and autonomous DCA into Robinhood Stock Tokens.
+* **Composability-First Architecture**: NovaWealth embraces open composability, built for seamless circulation, automated lending yields (Robinhood Earn / MetaMorpho standards), and autonomous DCA into Robinhood Stock Tokens.
 
 ### The Solution: NovaWealth
 NovaWealth is a retail-grade, mobile-first autonomous wealth copilot built on **Robinhood Chain** that transforms idle cash-equivalent RWAs into an active, wealth-generating equity portfolio with **zero principal risk**:
 
-1. **High-Yield Smart Cash (Paxos USDG + Morpho Blue)**: Users deposit Paxos USDG into a high-yield vault integrated with Robinhood Chain lending rails (Morpho/Earn) to earn consistent baseline APY (e.g., 7–10%).
+1. **High-Yield Smart Cash (Paxos USDG + MetaMorpho Rail)**: Users deposit Paxos USDG into an ERC-4626 Meta-Vault architecturally aligned with Robinhood Chain lending rails (Robinhood Earn / MetaMorpho curated by Steakhouse) to earn consistent baseline APY (e.g., 7–10%). For testnet deployment, external yield inflow is simulated and settled on-chain via the protocol's verified injectYield() pipeline, preserving strict mathematical principal isolation.
 2. **Instant T+0 Liquidity Fronting**: Solves the RWA liquidity friction (*"T+0 meets 30–180 days"*). While underlying RWAs or funds take days to settle, `NovaVault` maintains an on-chain liquidity buffer so the user's principal is **100% liquid and withdrawable at T+0**.
 3. **"No-Principal-Risk" Equity Streaming**: NovaWealth’s autonomous copilot continuously harvests accrued yield and streams it into a personalized basket of **Robinhood Stock Tokens** (e.g., 50% SPY, 30% NVDA, 20% AAPL). **The user's initial USDG principal is never spent or exposed to equity downside.**
 4. **True Retail UX via ERC-4337 Account Abstraction**: 1-click **Passkey (FaceID / TouchID)** onboarding, 100% gas-sponsored transactions (users never see or hold ETH for gas), and scoped **Session Keys** that allow the copilot to rebalance yield without annoying signature popups.
@@ -48,7 +48,7 @@ graph TD
         YieldStreamer[YieldStreamer.sol<br/>Auto-DCA & Rebalance Engine]
         StockAdapter[StockTokenAdapter.sol<br/>ERC-8056 Multiplier & Chainlink Normalizer]
         
-        Morpho[Morpho Blue / Robinhood Earn]
+        Morpho[Robinhood Earn / MetaMorpho Rail]
         USDG[Paxos USDG Stablecoin<br/>0x7E955252E15c84f5768B83c41a71F9eba181802F]
         StockTokens[Live Stock Tokens:<br/>TSLA: 0xC9f9c86933092BbbfFF3CCb4b105A4A94bf3Bd4E<br/>AMZN: 0x5884aD2f920c162CFBbACc88C9C51AA75eC09E02<br/>AMD: 0x71178BAc73cBeb415514eB542a8995b82669778d<br/>NFLX: 0x3b8262A63d25f0477c4DDE23F83cfe22Cb768C93<br/>PLTR: 0x1FBE1a0e43594b3455993B5dE5Fd0A7A266298d0]
         Chainlink[Chainlink AggregatorV3 Feeds]
@@ -78,7 +78,7 @@ graph TD
    * Issues share tokens (`nvUSDG`) representing claims on deposited principal.
    * Separates user principal from harvested yield.
    * Features an instant liquidity buffer to guarantee **T+0 instant redemptions** of principal on-demand.
-   * Supplies excess liquidity to Robinhood Chain's anchor lending protocol (**Morpho Blue**) to generate continuous yield.
+   * Architected to supply excess liquidity to Robinhood Chain's anchor lending rails (**Robinhood Earn MetaMorpho infrastructure**, curated by Steakhouse Financial) to generate continuous yield (settled on testnet via the verified yield injection pipeline).
 
 2. **`YieldStreamer.sol` (Autonomous DCA Engine)**:
    * Holds user-configured allocation baskets (e.g., *"Mag 7 Tech"*: `NVDA 40%`, `AAPL 30%`, `MSFT 30%`; *"All-Weather Index"*: `SPY 70%`, `GOOGL 30%`).
