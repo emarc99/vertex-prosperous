@@ -11,6 +11,7 @@ const VAULT_ABI = [
   "function totalAssets() external view returns (uint256)",
   "function totalPrincipalDeposited() external view returns (uint256)",
   "function accruedYield() external view returns (uint256)",
+  "function totalYieldHarvested() external view returns (uint256)",
   "function balanceOf(address account) external view returns (uint256)"
 ];
 
