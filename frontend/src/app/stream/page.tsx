@@ -162,23 +162,31 @@ export default function StreamPage() {
     }
 
     try {
+      const tokens = positions.map(p => p.address || deployedInfo.stockTokens.TSLA.address);
+      const weightsBps = positions.map(p => p.allocation * 100);
+
       if (typeof window !== "undefined" && (window as any).ethereum) {
         const provider = new ethers.BrowserProvider((window as any).ethereum);
         const signer = await provider.getSigner();
 
         const streamer = new ethers.Contract(deployedInfo.contracts.YieldStreamer, STREAMER_ABI, signer);
-        const tokens = positions.map(p => p.address || deployedInfo.stockTokens.TSLA.address);
-        const weightsBps = positions.map(p => p.allocation * 100);
-
-        setStatusMsg({ text: "Submitting allocation basket to YieldStreamer..." });
+        setStatusMsg({ text: "Submitting allocation basket to YieldStreamer via your wallet..." });
         const tx = await streamer.setAllocationBasket(tokens, weightsBps);
         await tx.wait(1);
 
-        setStatusMsg({ text: `✓ Successfully saved onchain allocation basket! Tx: ${tx.hash.slice(0, 10)}...` });
-        await fetchOnChainState();
+        setStatusMsg({ text: `✓ On-chain basket saved! Tx: ${tx.hash.slice(0, 10)}... (Robinhood Chain Testnet)` });
       } else {
-        setStatusMsg({ text: `✓ Target basket saved: ${positions.map(p => `${p.symbol} ${p.allocation}%`).join(', ')}.` });
+        setStatusMsg({ text: "Broadcasting allocation basket to Robinhood Chain testnet..." });
+        const res = await fetch('/api/basket', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tokens, weightsBps })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        setStatusMsg({ text: `✓ Real on-chain basket saved! Tx: ${data.txHash.slice(0, 10)}... (Block #${data.blockNumber})` });
       }
+      await fetchOnChainState();
     } catch (err: any) {
       console.error(err);
       setStatusMsg({ text: err.reason || err.message || "Failed to update basket", isError: true });
@@ -208,11 +216,19 @@ export default function StreamPage() {
         const tx = await streamer.streamYield(userAddr, streamAmount);
         await tx.wait(1);
 
-        setStatusMsg({ text: `✓ Successfully streamed $${ethers.formatUnits(streamAmount, 6)} USDG into stock tokens! Tx: ${tx.hash.slice(0, 10)}...` });
-        await fetchOnChainState();
+        setStatusMsg({ text: `✓ Successfully streamed $${ethers.formatUnits(streamAmount, 6)} USDG on-chain! Tx: ${tx.hash.slice(0, 10)}...` });
       } else {
-        setStatusMsg({ text: "Please connect a Web3 wallet (or passkey) to execute on-chain streaming.", isError: true });
+        setStatusMsg({ text: `Broadcasting $5.00 USDG yield stream to Robinhood Chain testnet...` });
+        const res = await fetch('/api/stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user: activeAddress, amount: Math.min(accruedYield, 5.0) })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        setStatusMsg({ text: `✓ Real on-chain yield streamed! Tx: ${data.txHash.slice(0, 10)}... (Block #${data.blockNumber})` });
       }
+      await fetchOnChainState();
     } catch (err: any) {
       console.error(err);
       setStatusMsg({ text: err.reason || err.message || "Stream execution cancelled", isError: true });

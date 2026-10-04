@@ -237,7 +237,7 @@ export default function Dashboard() {
                   ${displayPrincipal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {isLive ? "NovaVault.totalPrincipalDeposited" : "100% Principal Protected • T+0 Liquid"}
+                  100% Principal Protected • T+0 Liquid
                 </p>
               </div>
             </div>
